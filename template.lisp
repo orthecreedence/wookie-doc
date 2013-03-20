@@ -54,6 +54,27 @@
               (setf (getf kv-pairs key) value))))))
     kv-pairs))
 
+(defun format-code-blocks (str)
+  (cl-ppcre:regex-replace-all
+    (cl-ppcre:create-scanner
+      "```(.*?)(\\n.*?)(\\n)```"
+      :case-insensitive-mode t
+      :single-line-mode t)
+    str
+    "\\3<pre class=\"brush: \\1; gutter: false;\">\\2</pre>\\3"
+    ;(lambda (match &rest regs)
+    ;  (let* ((regs (cddddr regs))
+    ;         (rs (car regs))
+    ;         (re (cadr regs))
+    ;         (lang (subseq match (aref rs 0) (aref re 0)))
+    ;         (code (subseq match (aref rs 1) (aref re 1))))
+    ;    (concatenate 'string
+    ;                 markdown.cl::*nl*
+    ;                 "<pre><code class=\"" lang "\">"
+    ;                 (markdown.cl::do-parse-entities code)
+    ;                 "</code></pre>" markdown.cl::*nl*)))
+    ))
+
 (defun load-views (&key subdir (clear t) (view-directory (format nil "~a/views" *root*)))
   "Load and cache all view files."
   (when clear
@@ -74,13 +95,7 @@
                            (markdown-header (when markdown-header (aref markdown-header 0)))
                            (parsed-headers (parse-markdown-header markdown-header))
                            (markdown-str (cl-ppcre:regex-replace *scanner-md-header* markdown-str ""))
-                           (markdown-str (cl-ppcre:regex-replace-all
-                                           (cl-ppcre:create-scanner
-                                             "```(.*?)\\n(.*?)(\\n)```"
-                                             :case-insensitive-mode t
-                                             :single-line-mode t)
-                                           markdown-str
-                                           "\\3<pre><code class=\"\\1\">\\2</code></pre>\\3"))
+                           (markdown-str (format-code-blocks markdown-str))
                            (html (markdown.cl:parse markdown-str)))
                       (setf (gethash view-name *views*)
                             (list :meta parsed-headers

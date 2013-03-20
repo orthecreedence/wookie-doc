@@ -49,7 +49,7 @@ the `bind-args` argument. `:case-sensitive` specifies if the route's regex is
 case-sensitive.
 
 `:chunk` tells us that this route is more than willing to stream chunked
-content. In other words, we'll set up a handler in our route using [with-chunking](/wookie/request-handling#with-chunking)
+content. In other words, we'll set up a handler in our route using [with-chunking](/docs/request-handling#with-chunking)
 to stream content over HTTP.
 
 `:replace` tells the routing system that this route should replace the first 
@@ -61,8 +61,8 @@ The `:vhost` keyword specifies that this route should only load for a specific
 provided the host matches.
 
 `bind-request` and `bind-response` are the variables we want to be available to
-the route body that hold our respective [request](/wookie/request-handling#request)
-and [response](/wookie/request-handling#response) objects for the incoming
+the route body that hold our respective [request](/docs/request-handling#request)
+and [response](/docs/request-handling#response) objects for the incoming
 request. If `bind-args` is passed, it will be a list that holds all the matched
 groups from the `resource` regex.
 

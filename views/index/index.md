@@ -8,9 +8,9 @@ Wookie
 
 Wookie is many things to us:
 
- - A dog
- - A webserver
- 
+- A dog
+- A webserver
+
 I could go on listing things, but I won't.
 
 I hope this gives you a clear picture of what Wookie is and how it works.

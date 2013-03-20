@@ -5,10 +5,17 @@
     (:head
       (:title (str (getf data :title)))
       (:link :rel "stylesheet" :href "/css/template.css")
-      (:link :rel "stylesheet" :href "/js/highlight.js/styles/zenburn.css")
       (:script :src "/js/mootools-1.4.1.js")
-      (:script :src "/js/highlight.js/highlight.pack.js")
-      (:script :src "/js/wookie.js"))
+      (:script :src "/js/wookie.js")
+      ;; syntax highlighting
+      (:link :rel "stylesheet" :href "/js/syntaxhighlighter_3.0.83/styles/shCore.css")
+      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shCore.js")
+      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shLegacy.js")
+      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shAutoloader.js")
+      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shBrushLisp.js")
+      ;(:link :rel "stylesheet" :href "/js/highlight.js/styles/zenburn.css")
+      ;(:script :src "/js/highlight.js/highlight.pack.js")
+      )
     (:body
       (:div :id "container"
         (:header
@@ -27,6 +34,6 @@
           (:ul
             (:li (:a :href "/" "Wookie home"))
             (:li (:a :href "https://github.com/orthecreedence/wookie" "github")))
-          (:p "&copy; Lyon Bros. Enterprises, LLC"))))))
+          (:p "&copy;" (:a :href "http://lyonbros.com" "Lyon Bros. Enterprises, LLC")))))))
 
 
