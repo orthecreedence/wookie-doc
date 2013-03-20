@@ -2,7 +2,7 @@
   :author "Andrew Lyon <andrew@musio.com>"
   :licence "MIT"
   :version "0.0.1"
-  :depends-on (#:cl-fad #:cl-who #:cl-markdown #:cl-ppcre #:wookie)
+  :depends-on (#:cl-fad #:cl-who #:markdown.cl #:cl-ppcre #:wookie)
   :components
   ((:file "package")
    (:file "config" :depends-on ("package"))

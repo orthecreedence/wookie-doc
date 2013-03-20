@@ -42,18 +42,17 @@
 (defun parse-markdown-header (header)
   "Parses the key-value section in a markdown header."
   (let ((kv-pairs nil))
-    (dolist (line (cl-ppcre:split "[\\r\\n]+" header))
-      (let ((colon-pos (position #\: line)))
-        (when colon-pos
-          (let* ((key (intern (string-upcase (subseq line 0 colon-pos)) :keyword))
-                 (value (subseq line (+ colon-pos 1)))
-                 (value (string-trim #(#\space #\return #\newline) value)))
-            (case key
-              (:layout (setf value (intern (string-upcase value) :wookie-doc))))
-            (setf (getf kv-pairs key) value)))))
+    (when header
+      (dolist (line (cl-ppcre:split "[\\r\\n]+" header))
+        (let ((colon-pos (position #\: line)))
+          (when colon-pos
+            (let* ((key (intern (string-upcase (subseq line 0 colon-pos)) :keyword))
+                   (value (subseq line (+ colon-pos 1)))
+                   (value (string-trim #(#\space #\return #\newline) value)))
+              (case key
+                (:layout (setf value (intern (string-upcase value) :wookie-doc))))
+              (setf (getf kv-pairs key) value))))))
     kv-pairs))
-
-;(parse-markdown-header (format nil "~ctitle: wookie: a blah blah~clayout: default~c" #\newline #\newline #\newline))
 
 (defun load-views (&key subdir (clear t) (view-directory (format nil "~a/views" *root*)))
   "Load and cache all view files."
@@ -71,10 +70,18 @@
                     (load file))
                    ((string= ext ".md")
                     (let* ((markdown-str (file-contents file))
-                           (markdown-header (aref (nth-value 1 (cl-ppcre:scan-to-strings *scanner-md-header* markdown-str)) 0))
+                           (markdown-header (nth-value 1 (cl-ppcre:scan-to-strings *scanner-md-header* markdown-str)))
+                           (markdown-header (when markdown-header (aref markdown-header 0)))
                            (parsed-headers (parse-markdown-header markdown-header))
                            (markdown-str (cl-ppcre:regex-replace *scanner-md-header* markdown-str ""))
-                           (html (with-output-to-string (s) (cl-markdown:markdown markdown-str :stream s))))
+                           (markdown-str (cl-ppcre:regex-replace-all
+                                           (cl-ppcre:create-scanner
+                                             "```(.*?)\\n(.*?)(\\n)```"
+                                             :case-insensitive-mode t
+                                             :single-line-mode t)
+                                           markdown-str
+                                           "\\3<pre><code class=\"\\1\">\\2</code></pre>\\3"))
+                           (html (markdown.cl:parse markdown-str)))
                       (setf (gethash view-name *views*)
                             (list :meta parsed-headers
                                   :html html)))))))))

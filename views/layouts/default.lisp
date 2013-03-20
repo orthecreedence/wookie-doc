@@ -5,12 +5,10 @@
     (:head
       (:title (str (getf data :title)))
       (:link :rel "stylesheet" :href "/css/template.css")
-      (:link :rel "stylesheet" :href "/css/site.css")
       (:link :rel "stylesheet" :href "/js/highlight.js/styles/zenburn.css")
+      (:script :src "/js/mootools-1.4.1.js")
       (:script :src "/js/highlight.js/highlight.pack.js")
-      (:script
-        "hljs.tabReplace = '    ';
-         hljs.initHighlightingOnLoad();"))
+      (:script :src "/js/wookie.js"))
     (:body
       (:div :id "container"
         (:header
