@@ -8,14 +8,8 @@
       (:script :src "/js/mootools-1.4.1.js")
       (:script :src "/js/wookie.js")
       ;; syntax highlighting
-      (:link :rel "stylesheet" :href "/js/syntaxhighlighter_3.0.83/styles/shCore.css")
-      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shCore.js")
-      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shLegacy.js")
-      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shAutoloader.js")
-      (:script :src "/js/syntaxhighlighter_3.0.83/scripts/shBrushLisp.js")
-      ;(:link :rel "stylesheet" :href "/js/highlight.js/styles/zenburn.css")
-      ;(:script :src "/js/highlight.js/highlight.pack.js")
-      )
+      (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/github.css")
+      (:script :src "/js/highlight-lisp/highlight-lisp.js"))
     (:body
       (:div :id "container"
         (:header

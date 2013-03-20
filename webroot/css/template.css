@@ -45,9 +45,10 @@ ul {margin: 15px 0; padding: 0 0 0 30px;}
 ul ul {margin: 0;}
 p {margin: 15px 0;}
 code {margin: 0 2px; padding: 0 5px; white-space: nowrap; font-family: Consolas, "Liberation Mono", Courier, monospace; background: #f8f8f8; border: 1px solid #eaeaea; border-radius: 3px;}
+/*
 pre {border: 0px solid #ccc;}
-pre .keyword {color: #e3ceab !important;}
 pre code {white-space: pre; margin: 0; padding: 0; background: none; border: none; overflow-x: auto; font-size: 13px;}
+*/
 i, cite, em, var, address, dfn { font-style: italic; }
 
 .post .date {float: right; display: inline-block; padding: 6px 0 0 0;}

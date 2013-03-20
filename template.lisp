@@ -61,7 +61,7 @@
       :case-insensitive-mode t
       :single-line-mode t)
     str
-    "\\3<pre class=\"brush: \\1; gutter: false;\">\\2</pre>\\3"
+    "\\3<pre><code class=\"\\1\">\\2</code></pre>\\3"
     ;(lambda (match &rest regs)
     ;  (let* ((regs (cddddr regs))
     ;         (rs (car regs))

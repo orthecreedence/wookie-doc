@@ -10,9 +10,9 @@
 	function Brush()
 	{
 		var funcs = 
-			'\\* find-method pprint-indent \\*\\* find-package pprint-linear \\*\\*\\* find-restart ' +
-			'pprint-logical-block \\+ find-symbol pprint-newline \\+\\+ finish-output ' +
-			'pprint-pop \\+\\+\\+ first pprint-tab - fixnum pprint-tabular / flet prin1 // float ' +
+			'\\* find-method pprint-indent find-package pprint-linear find-restart ' +
+			'pprint-logical-block \\+ find-symbol pprint-newline finish-output ' +
+			'pprint-pop first pprint-tab - fixnum pprint-tabular / flet prin1 // float ' +
 			'prin1-to-string /// float-digits princ /= float-precision princ-to-string 1\\+ ' +
 			'float-radix print 1- float-sign print-not-readable < floating-point-inexact ' +
 			'print-not-readable-object <= floating-point-invalid-operation print-object = ' +
@@ -219,6 +219,7 @@
 
 		this.regexList = [
 			{ regex: SyntaxHighlighter.regexLib.doubleQuotedString, css: 'string' },
+        	{ regex: new RegExp('&\\w+;', 'g'), css: 'plain' },
         	{ regex: new RegExp('[)(]', 'g'), css: 'list' },
         	{ regex: new RegExp('-\\=\\(\\.\\d\\+\\|\\d\\+\\(\\.\\d*\\)\\=\\)\\([dDeEfFlL][-+]\\=\\d\\+\\)\\=', 'g'), css: 'number' },
         	{ regex: new RegExp('-\\=\\(\\d\\+/\\d\\+\\)', 'g'), css: 'number' },
@@ -228,12 +229,11 @@
         	{ regex: new RegExp("(\\w[a-z_0-9-]*:)?\\*\\w[a-z_0-9-]*\\*", 'g'), css: 'global' },
         	{ regex: new RegExp("(\\w[a-z_0-9-]*:)?\\+[\\w-]+\\+", 'g'), css: 'constant' },
         	{ regex: new RegExp("\\b(t|nil)\\b", 'g'), css: 'nil' },
-        	{ regex: new RegExp('&\\w+;', 'g'), css: 'plain' },
-        	{ regex: new RegExp(this.getKeywords(funcs), 'gm'), css: 'function' },
+        	{ regex: new RegExp(this.getKeywords(lambda), 'gm'), css: 'lambda-list' },
         	{ regex: new RegExp(this.getKeywords(standard), 'gm'), css: 'standard-var' },
         	{ regex: new RegExp(this.getKeywords(keywords), 'gm'), css: 'keyword' },
-        	{ regex: new RegExp(this.getKeywords(lambda), 'gm'), css: 'lambda-list' },
         	{ regex: new RegExp(this.getKeywords(special), 'gm'), css: 'special' },
+        	{ regex: new RegExp(this.getKeywords(funcs), 'gm'), css: 'function' },
 		];
 	};
 

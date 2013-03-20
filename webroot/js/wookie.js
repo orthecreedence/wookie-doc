@@ -37,9 +37,18 @@ var wookie = {
 };
 
 document.addEvent('domready', function() {
-	//hljs.tabReplace = '    ';
 	// prefer manual highlighting so we can run some aftermarket mods >=]
-	SyntaxHighlighter.all();
+
+	HighlightLisp.highlight_auto();
+	/*
+	document.getElements('pre code.lisp').each(function(el) {
+		HighlightLisp.highlight_element(el);
+	});
+	*/
+
+	//SyntaxHighlighter.all();
+
 	//wookie.manual_highlight();
+	//hljs.tabReplace = '    ';
 	//hljs.initHighlightingOnLoad();
 });
