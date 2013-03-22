@@ -1,4 +1,10 @@
 var wookie = {
+	init: function()
+	{
+		wookie.init_img_hover();
+		HighlightLisp.highlight_auto();
+	},
+
 	manual_highlight: function()
 	{
 		var codes = document.getElements('code');
@@ -33,22 +39,30 @@ var wookie = {
 				hljs.highlightBlock(el);
 			}
 		});
+	},
+
+	init_img_hover: function()
+	{
+		var wimg = $('wookie');
+		if(!wimg) return;
+		var fx = new Fx.Tween(wimg, {duration: 1000, transition: 'bounce:out', property: 'right'});
+		wimg.addEvent('mouseenter', function(e) {
+			fx.stop()
+			fx.start(0);
+		});
+		wimg.addEvent('mouseleave', function(e) {
+			fx.stop()
+			fx.start(-120);
+		});
 	}
 };
 
 document.addEvent('domready', function() {
-	// prefer manual highlighting so we can run some aftermarket mods >=]
+	wookie.init();
 
-	HighlightLisp.highlight_auto();
-	/*
-	document.getElements('pre code.lisp').each(function(el) {
-		HighlightLisp.highlight_element(el);
-	});
-	*/
-
-	//SyntaxHighlighter.all();
-
-	//wookie.manual_highlight();
 	//hljs.tabReplace = '    ';
 	//hljs.initHighlightingOnLoad();
+	//SyntaxHighlighter.all();
+	// prefer manual highlighting so we can run some aftermarket mods >=]
+	//wookie.manual_highlight();
 });

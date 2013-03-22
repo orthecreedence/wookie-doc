@@ -8,9 +8,10 @@
       (:script :src "/js/mootools-1.4.1.js")
       (:script :src "/js/wookie.js")
       ;; syntax highlighting
-      (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/github.css")
+      (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/dark.css" :id "hl-style")
       (:script :src "/js/highlight-lisp/highlight-lisp.js"))
     (:body
+      (:div :id "wookie" (:a :href "/" "&nbsp;"))
       (:div :id "container"
         (:header
           (:h1 (:a :href "/" "Wookie"))
@@ -21,7 +22,7 @@
               (:li (:a :href "/photos" "Photos"))
               (:li (:a :href "/refresh-views" "(reset views)")))))
         (:content
-          (:div :class "gutter"
+          (:div :class "gutter clear"
             (str (getf data :content))))
         
         (:footer
