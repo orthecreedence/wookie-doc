@@ -55,25 +55,73 @@
     kv-pairs))
 
 (defun format-code-blocks (str)
+  "Turn
+
+   ```lisp
+   (defun () ...)
+   ```
+
+   into
+
+   <pre><code class=\"lisp\">(defun () ...)</code></pre>
+   "
   (cl-ppcre:regex-replace-all
     (cl-ppcre:create-scanner
       "```(.*?)(\\n.*?)(\\n)```"
       :case-insensitive-mode t
       :single-line-mode t)
     str
-    "\\3<pre><code class=\"\\1\">\\2</code></pre>\\3"
-    ;(lambda (match &rest regs)
-    ;  (let* ((regs (cddddr regs))
-    ;         (rs (car regs))
-    ;         (re (cadr regs))
-    ;         (lang (subseq match (aref rs 0) (aref re 0)))
-    ;         (code (subseq match (aref rs 1) (aref re 1))))
-    ;    (concatenate 'string
-    ;                 markdown.cl::*nl*
-    ;                 "<pre><code class=\"" lang "\">"
-    ;                 (markdown.cl::do-parse-entities code)
-    ;                 "</code></pre>" markdown.cl::*nl*)))
-    ))
+    "\\3<pre><code class=\"\\1\">\\2</code></pre>\\3"))
+
+(defun convert-to-html-id (str)
+  "Convert 'Omg Lol Wtf' to 'omg-lol-wtf'"
+  (let* ((str (cl-ppcre:regex-replace-all "[^\\w]" str "-"))
+         (str (cl-ppcre:regex-replace-all "-+" str "-"))
+         (str (cl-ppcre:regex-replace-all "(^-+|-+$)" str "")))
+    (string-downcase str)))
+
+(defun generate-table-of-contents (str)
+  "Generate a table of contents for documentation. Injects itself into {{toc}}
+   tags."
+  (unless (search "{{toc}}" str)
+    (return-from generate-table-of-contents str))
+
+  (let* ((headers nil)
+         (str (cl-ppcre:regex-replace-all
+                (cl-ppcre:create-scanner "^((#{3,5})\\s*(.*?)(\\s*#+)?)$" :multi-line-mode t)
+                str
+                (lambda (match &rest regs)
+                  (declare (ignore match))
+                  (let* ((regs (cddddr regs))
+                         (rs (car regs))
+                         (re (cadr regs))
+                         (tag (subseq str (aref rs 0) (aref re 0)))
+                         (level (length (subseq str (aref rs 1) (aref re 1))))
+                         (title (subseq str (aref rs 2) (aref re 2)))
+                         (type-pos (position (code-char 40) title))
+                         (type (if type-pos (subseq title (1+ type-pos) (position (code-char 41) title :start type-pos)) ""))
+                         (title (if type-pos (subseq title 0 type-pos) title))
+                         (id (convert-to-html-id title)))
+                    (push (list :title title
+                                :type type
+                                :id id
+                                :level (- level 3)) headers)
+                    (concatenate 'string "<a id=\"" id "\"></a>" markdown.cl::*nl* tag)))))
+         (headers (reverse headers)))
+    (cl-ppcre:regex-replace "{{toc}}" str
+      (lambda (&rest _)
+        (declare (ignore _))
+        (with-output-to-string (s)
+          (dolist (header headers)
+            (dotimes (i (getf header :level))
+              (format s " "))
+            (let* ((title (getf header :title))
+                   (id (getf header :id))
+                   (type (getf header :type)))
+              (format s "- [~a](#~a)" title id)
+              (unless (string= type "")
+                (format s " _~a_" type))
+              (format s "~a" markdown.cl::*nl*))))))))
 
 (defun load-views (&key subdir (clear t) (view-directory (format nil "~a/views" *root*)))
   "Load and cache all view files."
@@ -96,6 +144,7 @@
                            (parsed-headers (parse-markdown-header markdown-header))
                            (markdown-str (cl-ppcre:regex-replace *scanner-md-header* markdown-str ""))
                            (markdown-str (format-code-blocks markdown-str))
+                           (markdown-str (generate-table-of-contents markdown-str))
                            (html (markdown.cl:parse markdown-str)))
                       (setf (gethash view-name *views*)
                             (list :meta parsed-headers
@@ -121,32 +170,3 @@
   (let ((layout-fn (intern (string-upcase (format nil "layout-~a" name)) :wookie-doc)))
     (funcall layout-fn data)))
 
-#|
-(setf (cl-who:html-mode) :html5)
-(cl-who:with-html-output-to-string (s nil :prologue t :indent nil)
-  (:html
-    (:head
-      (:title "FUUUUCK"))
-    (:body
-      (dotimes (i 3)
-        (cl-who:htm (:h1 "hai...")))
-      (:p "how r u"))))
-
-(cl-markdown:markdown "
----
-title: My dissertation
-layout: default
----
-
-my boner hurtz
-==============
-
-things i hate:
-
- - hurt boner
- - when bitches dont touch my weiner
- - other stuff
-
-thus concludes my PHD dissertation.
-")
-|#

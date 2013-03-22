@@ -21,15 +21,8 @@ the router that they are the wrong route for the job and that the routing
 system should use the next matching route (known as "route jumping," done via
 the [next-route](#next-route) function).
 
-- [defroute](#defroute) _macro_
-- [with-vhost](#with-vhost) _macro_
-- [clear-route](#clear-route) _function_
-- [clear-routes](#clear-routes) _function_
-- [next-route](#next-route) _function_
-- [route-error](#route-error) _condition_
-- [route-not-found](#route-not-found) _condition_
+{{toc}}
 
-<a id="defroute"></a>
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
@@ -95,7 +88,6 @@ Let's dive in with a few examples:
       (send-response res :body "Thanks for the file."))))
 ```
 
-<a id="with-vhost"></a>
 ### with-vhost (macro)
 ```lisp
 (defmacro with-vhost (host &body body))
@@ -120,7 +112,6 @@ defroute's `:vhost` keyword).
     (send-response res :body "you hit the error page. you must be REALLY smart.")))
 ```
 
-<a id="clear-route"></a>
 ### clear-route (function)
 ```lisp
 (defun clear-route (method resource-str))
@@ -137,7 +128,6 @@ Removes all routes that match the given method/resource from the routing table.
 (clear-route :get "/friends")
 ```
 
-<a id="clear-routes"></a>
 ### clear-routes (function)
 ```lisp
 (defun clear-routes ())
@@ -146,7 +136,6 @@ Removes all routes that match the given method/resource from the routing table.
 
 Clear out all routes in the routing table.
 
-<a id="next-route"></a>
 ### next-route (function)
 ```lisp
 (defun next-route ())
@@ -172,11 +161,9 @@ specific `Accept` header).
   (send-response res :status 404 :body "What you're looking for isn't here."))
 ```
 
-<a id="route-error"></a>
 ### route-error (condition)
 A condition that describes a general error with the routing system.
 
-<a id="route-not-found"></a>
 ### route-not-found (condition)
 _extends [route-error](#route-error)_
 
