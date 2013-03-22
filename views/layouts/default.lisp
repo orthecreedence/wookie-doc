@@ -8,7 +8,7 @@
       (:script :src "/js/mootools-1.4.1.js")
       (:script :src "/js/wookie.js")
       ;; syntax highlighting
-      (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/dark.css" :id "hl-style")
+      (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/wookie.css" :id "hl-style")
       (:script :src "/js/highlight-lisp/highlight-lisp.js"))
     (:body
       (:div :id "wookie" (:a :href "/" "&nbsp;"))
