@@ -3,4 +3,5 @@
   (:export :start)
   (:import-from :cl-who
                 :str
+                :conc
                 :htm))

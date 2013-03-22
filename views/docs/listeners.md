@@ -33,7 +33,7 @@ _extends [listener](#listener)_
 
 The `ssl-listener` class extends the [listener](#listener) class and tells
 Wookie to listen over SSL using the given certificate/key (and optional key
-password). It uses [cl-async's SSL](/cl-async/tcp-ssl). Loading of SSL can be
+password). It uses [cl-async's SSL](http://orthecreedence.github.com/cl-async/tcp-ssl). Loading of SSL can be
 completely disabled by pushing `:wookie-no-ssl` onto `*features*` before loading
 Wookie.
 
@@ -53,5 +53,5 @@ file is password-encrypted).
   => tcp-server
 ```
 
-This method takes a listener and uses it to create a [cl-async tcp-server](/cl-async/tcp#tcp-server)
+This method takes a listener and uses it to create a [cl-async tcp-server](http://orthecreedence.github.com/cl-async/tcp#tcp-server)
 object which is then returned.

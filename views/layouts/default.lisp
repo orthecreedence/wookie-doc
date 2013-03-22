@@ -3,7 +3,7 @@
 (deflayout default (data :top-level t)
   (:html
     (:head
-      (:title (str (getf data :title)))
+      (:title (str (conc (getf data :title) " | Wookie")))
       (:link :rel "stylesheet" :href "/css/template.css")
       (:script :src "/js/mootools-1.4.1.js")
       (:script :src "/js/wookie.js")
@@ -19,8 +19,9 @@
             (:ul
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
-              (:li (:a :href "/photos" "Photos"))
-              (:li (:a :href "/refresh-views" "(reset views)")))))
+              ;(:li (:a :href "/photos" "Photos"))
+              ;(:li (:a :href "/refresh-views" "(reset views)"))
+              )))
         (:content
           (:div :class "gutter clear"
             (str (getf data :content))))

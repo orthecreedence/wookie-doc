@@ -13,61 +13,213 @@ stream incoming/outgoing chunked HTTP content.
 
 {{toc}}
 
-<!--
-- [request](#request) _class_
-  - [request-socket](#request-socket) _accessor_
-  - [request-method](#request-method) _accessor_
-  - [request-resource](#request-resource) _accessor_
-  - [request-headers](#request-headers) _accessor_
-  - [request-uri](#request-uri) _accessor_
-  - [request-http](#request-http) _accessor_
-- [response](#response) _class_
-  - [response-headers](#response-headers) _accessor_
-  - [response-finished-p](#response-finished-p) _accessor_
-- [send-response](#send-response) _function_
-- [start-response](#start-response) _function_
-- [finish-response](#finish-response) _function_
-- [with-chunking](#with-chunking) _macro_
-- [response-error](#response-error) _condition_
-  - [response-error-response](#response-error-response) _accessor_
-- [response-already-sent](#response-already-sent) _condition_
--->
-
 ### request (class)
 The request class holds information about an incoming request: the socket the
-request happened on, the HTTP method/resource/headers, etc.
+request happened on, the HTTP method/resource/headers/etc.
 
 It is passed to all routes defined by [defroute](/docs/routes#defroute).
 
 ##### request-socket (accessor)
+Accessor for the request's [cl-async socket](http://orthecreedence.github.com/cl-async/tcp#socket).
+Can be used to send data directly to the client if needed, although Wookie
+provides interfaces for most of the communication you'll need.
 
 ##### request-method (accessor)
+The HTTP method (`:get`, `:post`, `:delete`, etc) for the incoming request.
 
 ##### request-resource (accessor)
+The resource being requested. For example `/docs/search?class=listener` (the
+entire resource is gathered, even the GET vars).
 
 ##### request-headers (accessor)
+The HTTP headers that came in with this request. The headers are in plist format:
+```lisp
+(:host "musio.com"
+ :accept "text/html"
+ :connection "close")
+```
 
 ##### request-uri (accessor)
+This is a [puri](http://www.cl-user.net/asp/libs/PURI) object of the parsed HTTP
+[request resource](#request-resource).
 
 ##### request-http (accessor)
+This is the raw [http-request](https://github.com/orthecreedence/http-parse#http-request-class)
+object It's created by [http-parse](https://github.com/orthecreedence/http-parse),
+the HTTP parsing library used by Wookie.
 
 ### response (class)
+The response class is used to send a response from Wookie to the connecting
+client by passing it to [send-response](#send-response) or [start-response](#start-response).
+
+It is passed to all routes defined by [defroute](/docs/routes#defroute).
 
 ##### response-headers (accessor)
+This is the accessor for the headers to send back to the client. They are plis
+format:
+```lisp
+(:content-type "application/json"
+ :cache-control "max-age=10, public")
+```
+
+To specify multiple headers with the same name, the value can be a list instead
+of a string:
+```lisp
+(:set-cookie ("user=rick; Expires=Wed, 09-Jun-2021 10:18:14 GMT")
+             ("session=abc123"))
+```
 
 ##### response-finished-p (accessor)
+This stores whether or not the response has been sent already. Only one response
+can be sent per request. Wookie can and will, however, re-use a connection after
+a response has been sent if the client allows it.
 
 ### send-response (function)
+```lisp
+(defun send-response (response &key (status 200) headers body (close nil close-specified-p)))
+  => response
+```
+This function sends a response to the client. It takes the response object
+passed into a route. When using `send-response`, the response is sent all at
+once (as opposed to chunking, which can be done using [start-response](#start-response)
+and [finish-response](#finish-response).
+
+`:status` specifies the HTTP status code to send back (200, 404, etc).
+
+`:body` is used to send a body payload back to the client. When `:body` is
+specified, the "Content-Length" header is automatically populated *unless it is
+already present in either the [response object's headers](#response-headers) or
+send-response's `:headers` parameter*.
+
+`:headers` is used to specify any extra headers to send back to the client, in
+addition to the headers passed into the [response object](#response-headers). A
+few headers are automatically passed back to the client, but can be overridden
+by the response object's headers or the `:headers` keyword if needed:
+```lisp
+(:server "Wookie (0.1.2)"
+ :date "Fri, 22 Mar 2013 22:07:59 UTC")
+```
+
+<a id="send-response-close-keyword"></a>
+`:close` is used to tell Wookie to close the connection (or keep it open) after
+the response is sent. If not specified, Wookie will read the "Connection" header
+to determine whether or not to close the connection. In other words, feel free
+to leave this blank unless you have a good reason not to.
+
+`send-response` returns the same response object passed in.
+
+Here's an example `send-response` usage:
+
+```lisp
+(defroute (:get "/") (req res)
+  (send-response res
+                 :headers '(:content-type "text/html")
+                 :body (load-html-view :homepage)))
+```
 
 ### start-response (function)
+```lisp
+(defun start-response (response &key (status 200) headers))
+  => chunga:chunked-output-stream
+```
+This function allows you to send a response back to the client in chunks. It
+sends the headers stored in the [response object](#response-headers) along
+with those passed in `:headers`, and returns a chunked stream (courtesy of
+[chunga](http://weitz.de/chunga/)).
+
+The body of the response is written by sending data into the chunked stream. It
+must be binary data, but you can wrap the chunga stream in a
+[flexi-stream](http://weitz.de/flexi-streams/) if you want to send encoded
+string-data (but be sure to specify your flex stream encoding matches the
+"Content-Type: my/type; encoding=xxx" header you send back).
+
+Note that `start-response` calls [send-response](#send-response) to send all the
+needed headers back to the client.
+
+`start-response` automatically marks the response to support chunking by sending
+the "Transfer-Encoding: chunked" header.
+
+Once you are done sending your chunked data, you must call [finish-response](#finish-response)
+with the same response object you passed into `start-response`.
+
+Let's do an example:
+
+<a id="start-response-example"></a>
+```lisp
+(defroute (:get "/my-file") (req res)
+  (let ((stream (start-response res :headers '(:content-type "application/javascript"))))
+    ;; `load-file-in-chunks` is not a part of Wookie, this is just for demonstration
+    (my-app:load-file-in-chunks "file.js"
+      (lambda (contents-sequence)
+        (write-sequence contents-sequence stream)))
+    (finish-response res)))
+```
 
 ### finish-response (function)
+```lisp
+(defun finish-response (response &key (close nil close-specified-p)))
+  => response
+```
+This function finishes up a chunked response (started with [start-response](#start-response))
+by flushing the chunked stream and ensuring any data on it is sent out.
+
+The `:close` keyword can be used to specify whether or not Wookie should close
+the connection (or keep it open), but as with [send-response](#send-response-close-keyword),
+Wookie is more than capable of determining this automatically, so don't specify
+it unless you have a good reason.
+
+`finish-response` returns the same response object passed in.
+
+See the [start-response example](#start-response-example) for usage.
 
 ### with-chunking (macro)
+```lisp
+(defmacro with-chunking (request (chunk-data last-chunk-p) &body body))
+```
+This macro is used to support an incoming request that's chunked. For instance,
+let's say a user wants to upload a file to you, and instead of storing the
+entire file in memory while it's uploading, you want to stream it off to a file
+storage system (like Amazon's S3 for instance) piece by piece.
+
+This macro is meant to be used in conjuction with a route that has chunking
+enabled: `(defroute (:post "/files" :chunk t) ...)`. It takes the request object
+passed into the route and sets up a handler in that request for chunked data to
+be passed into. The `body` can be called multiple times, one for each chunk of
+incoming data.
+
+`chunk-data` is a octet (byte) sequence holding the data for the incoming chunk.
+
+`last-chunk-p` is a boolean. If it's `nil`, expect more chunks on the way. If
+it's `t`, then `chunk-data` is the last chunk in the data, and you should do
+any cleanup you need to.
+
+This is all confusing, so let's see an example where we stream an upload, chunk
+by chunk, to S3 using a fictional (but plausible) uploader object:
+
+```lisp
+(defroute (:post "/files" :chunk t) (req res)
+  (let ((s3-uploader nil))
+    (with-chunking req (chunk-bytes finishedp)
+      ;; create the fictional uploader
+      (unless s3-uploader
+        (setf s3-uploader (my-app:make-async-s3-uploader)))
+      ;; send the chunk to the uploader
+      (my-app:send-chunk-to-s3 s3-uploader chunk-bytes)
+      ;; once finished, cleanup and send the response to the client
+      (when finishedp
+        (my-app:finish-s3-upload s3-uploader)
+        (send-response res :body "Upload processed, thxlolol")))))
+```
 
 ### response-error (condition)
+This describes an error that occurs while sending a response.
 
 ##### response-error-response (accessor)
+Allows access to the [response](#response) class the error occured on.
 
 ### response-already-sent (condition)
+_extends [response-error](#response-error)_
+
+This error is thrown when a response is sent over the same [response object](#response)
+more than once. Only one response can be sent per request.
 
