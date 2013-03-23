@@ -29,7 +29,7 @@ Wookie's documentation is split into several parts:
 Quick start
 -----------
 Here are some quick examples to get you started using Wookie. Remember that
-Wookie runs on top of a [cl-async](/cl-async) event loop, so you must start
+Wookie runs on top of a [cl-async](http://orthecreedence.github.com/cl-async) event loop, so you must start
 Wookie from within an event loop for it to work.
 
 ### Starting Wookie
@@ -37,7 +37,7 @@ This example shows how to set up a very basic website using Wookie. It uses a
 [listener](/docs/listeners#listener), which describes how people can connect to
 the server, and passes it to [start-server](/docs/listeners#start-server).
 
-This example also shows how to load Wookie's [plugins](http://localhost:8080/docs/plugins),
+This example also shows how to load Wookie's [plugins](/docs/plugins),
 which provide key functionality such as parsing GET/POST parameters, file and
 directory serving, etc.
 
