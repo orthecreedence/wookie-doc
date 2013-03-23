@@ -19,6 +19,7 @@
             (:ul
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
+              (:li (:a :href "/guide" "Guide"))
               ;(:li (:a :href "/photos" "Photos"))
               ;(:li (:a :href "/refresh-views" "(reset views)"))
               )))
