@@ -30,7 +30,8 @@
         (:footer
           (:ul
             (:li (:a :href "/" "Wookie home"))
-            (:li (:a :href "https://github.com/orthecreedence/wookie" "github")))
+            (:li (:a :href "https://github.com/orthecreedence/wookie" "github"))
+            (:li "Powered by Wookie"))
           (:p "&copy;" (:a :href "http://lyonbros.com" "Lyon Bros. Enterprises, LLC")))))))
 
 

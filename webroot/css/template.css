@@ -16,7 +16,7 @@ div#wookie a {display: block; width: 220px; height: 238px;}
 div#wookie a:hover {text-decoration: none;}
 div#container {width: 740px; margin: 0 auto;}
 
-header {width: 108%; margin: -5px 0 40px -5%; padding: 8px 2% 4px 2%; background: #1d1f21; border: 1px solid #ccc; border-radius: 5px;}
+header {width: 108%; margin: -5px 0 40px -6%; padding: 8px 2% 4px 2%; background: #1d1f21; border: 1px solid #ccc; border-radius: 5px;}
 header h1 {float: left; margin: 0 0 0 0; padding: 0 32px 1px 0; font-size: 16px; border-right: 1px solid #555;}
 header h1 a {color: #ddd;}
 header h1 a:hover {color: #dbb748; text-decoration: none;}
@@ -32,7 +32,7 @@ nav ul li a:hover {color: #d9c382; text-decoration: none;}
 content {display: block; min-height: 300px;}
 content .documentation {padding-bottom: 100px;}
 
-footer {margin: 100px 0 0 0; padding: 4px 0 30px 0; font-size: 11px; border-top: 1px solid #ccc;}
+footer {margin: 100px 0 0 0; padding: 4px 0 30px 0; color: #666; font-size: 11px; border-top: 1px solid #ccc;}
 footer ul {float: left; list-style: none; margin: 0; padding: 0;}
 footer ul li {display: inline-block; padding: 0 6px 0 9px; line-height: 1; border-left: 1px solid #ccc;}
 footer ul li:first-child {border-left: 0; padding-left: 0;}

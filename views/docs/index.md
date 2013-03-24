@@ -13,11 +13,10 @@ Wookie's documentation is split into several parts:
 - [Routes](/docs/routes)<br>
   Routes are how you tell Wookie how you want to handle certain requests
 - [Request handling](/docs/request-handling)<br>
-  Describes how to pull data out of requests (such as GET/POST parameters, form
-  (and file) data, Cookies, etc).
+  Covers handling incoming requests, responding to them, and everything inbetween.
 - [Error handling](/docs/error-handling)<br>
-  This sections covers handling errors generated while running Wookie, as well
-  as errors that your application generates while processing.
+  Covers catching and handling of asynchronous errors/conditions while Wookie is
+  running.
 - [Plugins](/docs/plugins)<br>
   Wookie provides much functionality (even what some consider core features) in
   the form of plugins.
