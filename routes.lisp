@@ -20,20 +20,11 @@
 
 (def-directory-route "/" (format nil "~awebroot" *root*))
 
-(add-error-handler
-  t (lambda (err sock &rest _)
-      (declare (ignore _))
-      (format t "err: ~s~%" (list err sock))))
-
 (defroute (:get "/docs(/(.*))?") (req res args)
   (handler-case
     (let* ((view (intern (string-upcase (format nil "docs/~a" (or (cadr args) "index"))) :keyword))
            (content (load-view view)))
-      (send-response res :headers '(:content-type "text/html") :body content)
-      (as:delay (lambda ()
-                  (format t "LOLOLOL~%")
-                  (error "FUUUUU"))
-                :time 1))
+      (send-response res :headers '(:content-type "text/html") :body content))
     (view-not-found ()
       (page-not-found res))
     (error (e)
