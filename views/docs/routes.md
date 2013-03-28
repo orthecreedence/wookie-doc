@@ -3,7 +3,6 @@ title: Routes | Documentation
 layout: documentation
 ---
 
-<a style="float: right;" href="/docs">&laquo; Back to docs</a>
 Routes
 ======
 Routes allow you to map a URL to a block of code to be run when that URL is

@@ -3,7 +3,6 @@ title: Request handling | Documentation
 layout: documentation
 ---
 
-<a style="float: right;" href="/docs">&laquo; Back to docs</a>
 Request handling
 ================
 Starting a server and setting up routes is kewl, but unless you know what to do

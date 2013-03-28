@@ -3,7 +3,6 @@ title: Error handling | Documentation
 layout: documentation
 ---
 
-<a style="float: right;" href="/docs">&laquo; Back to docs</a>
 Error handling
 ==============
 Error handling is where asynchronous systems have much trouble. Wookie is no
@@ -30,4 +29,5 @@ that make async programming a bit nicer, however it's not a perfect solution.
   => nil
 ```
 Add an error handler (function) for a specific error type. Whenever the given
-error type is encountered, Wookie fires the handler function.
+error type is encountered, Wookie fires the handler function. You can specify
+that you want to catch *all* errors by passing `t` to `error-type`.

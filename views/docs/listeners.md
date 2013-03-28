@@ -3,7 +3,6 @@ title: Listeners | Documentation
 layout: documentation
 ---
 
-<a style="float: right;" href="/docs">&laquo; Back to docs</a>
 Listeners
 =========
 A listener is an object that describes to Wookie where/how it should listen for
