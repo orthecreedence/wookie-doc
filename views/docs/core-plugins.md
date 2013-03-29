@@ -27,7 +27,7 @@ Takes a the [request object](/docs/request-handling#request) and the variable
 key and returns the string value for that query string parameter:
 
 ```lisp
-;; request was "/search?name=fred
+;; request was "/search?name=fred"
 (defroute (:get "/search") (req res)
   (get-var req "name")  =>  "fred"
   ...)
