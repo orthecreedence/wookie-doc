@@ -18,5 +18,5 @@
     (as:start-event-loop
       (lambda ()
         (start-server listener))
-      :catch-app-errors t)))
+      :catch-app-errors nil)))
 

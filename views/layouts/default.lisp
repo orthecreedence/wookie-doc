@@ -5,8 +5,10 @@
     (:head
       (:title (str (conc (getf data :title) " | Wookie")))
       (:link :rel "stylesheet" :href "/css/template.css")
+      (:link :rel "stylesheet" :href "/css/modal.css")
       (:link :rel "shortcut icon" :href "/favicon.png" :type "image/png")
       (:script :src "/js/mootools-1.4.1.js")
+      (:script :src "/js/modal.js")
       (:script :src "/js/wookie.js")
       ;; syntax highlighting
       (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/wookie.css" :id "hl-style")
@@ -20,7 +22,8 @@
             (:ul
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
-              (:li (:a :href "/guide" "Guide")))))
+              ;(:li (:a :href "/guide" "Guide"))
+              )))
         (:content
           (:div :class "gutter clear"
             (str (getf data :content))))

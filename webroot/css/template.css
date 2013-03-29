@@ -55,15 +55,13 @@ code {margin: 0 2px; padding: 0 5px; white-space: nowrap; font-family: Consolas,
 pre code {color: #c9bf9f; white-space: pre; background: none;}
 em code, strong code {font-style: normal; font-weight: normal;}
 
-/*
-pre {border: 0px solid #ccc;}
-pre code {white-space: pre; margin: 0; padding: 0; background: none; border: none; overflow-x: auto; font-size: 13px;}
-*/
 i, cite, em, var, address, dfn { font-style: italic; }
 
 .post .date {float: right; display: inline-block; padding: 6px 0 0 0;}
 
-body .syntaxhighlighter {overflow: visible !important; overflow-x: auto !important;}
-
-/* custom highlight css */
+ul.gallery {list-style: none; margin: 0; padding: 0;}
+ul.gallery li {display: block; float: left; margin: 0 3px 3px 0;}
+ul.gallery li a {display: block; line-height: .1em;}
+ul.gallery li a img {border: 1px solid #666;}
+ul.gallery li a img:hover {border: 1px solid #000;}
 

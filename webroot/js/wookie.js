@@ -1,8 +1,14 @@
+var modal = null;
+
 var wookie = {
 	init: function()
 	{
 		wookie.init_img_hover();
 		HighlightLisp.highlight_auto();
+		modal = new modal_interface({
+			attach_links: true,
+			overlay: true
+		});
 	},
 
 	manual_highlight: function()
