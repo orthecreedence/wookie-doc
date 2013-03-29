@@ -1,22 +1,35 @@
 ---
-title: Wookie: An asynchronous web server for Common Lisp
+title: About Wookie
 layout: default
 ---
 
-Wookie - An asynchronous HTTP server
-====================================
-Wookie is an asynchronous HTTP server written in Common Lisp. It is built on top
-of [cl-async](http://orthecreedence.github.com/cl-async).
+About
+=====
+Wookie originally started as a port of Hunchentoot to use cl-async. As I got
+deeper in, I realized that there would have to be a lot of changes that weren't
+necessarily intuitive. The reality is that Hunchentoot was build to be threaded
+and if converted, would always be the strange genetic freak baby of synchronous
+and asynchronous.
 
-The principal behind Wookie is to have a very small core, with hooks in each
-processing step that allow for expansion. For instance, Wookie doesn't handle
-GET or POST variables natively. Instead, it has a set of [core plugins](/docs/core-plugins)
-that provide this functionality.
+Once I realized this, I started experimenting with doing HTTP in async. The most
+difficult part is correctly parsing the protocol. I built [a separate library
+for parsing HTTP](https://github.com/orthecreedence/http-parse) that can be used
+both synchronously (say, with usocket) or asynchronously with something like
+cl-async. After finishing http-parse, I started some very basic work to plug it
+into cl-async.
 
-*Wookie is very new and considered beta.*
+Wookie was born!
 
-The dog
--------
+I wanted to keep the Wookie core as lean and simple as possible, so I decided to
+create a hook system and plugin system that allows just about any functionality
+to be tacked on after the fact. So far the results have been favorable, with
+every web server feature I've needed so far able to be provided by a plugin.
+
+I have not used Wookie in a production environment yet, so still consider the
+project to be in beta until it has been battle-tested.
+
+The dog (Wookie)
+----------------
 <ul class="gallery clear">
     <li>
         <a href="/images/wookie/map.jpg" rel="modal">
@@ -71,4 +84,5 @@ The dog
 
 The webserver is named after my dog, Wookie. He's easily angered, image-obsessed,
 and make sounds like a wookie when squeezed. This project is dedicated to him.
+
 
