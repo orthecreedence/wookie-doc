@@ -35,7 +35,8 @@ is called.
 This is a list of folders to search for plugins in. The first folders in the
 list take precedence over later entries, meaning you could `push` your own
 plugin directory onto this variable, and the plugins in your directory would
-take precedence over any plugins in the cor directory.
+take precedence over any plugins in the core directory (any plugins with the
+same name would load from your directory, not hte core directory).
 
 The default `*plugin-folders*` value is a list with one entry, the `/core-plugins/`
 directory.

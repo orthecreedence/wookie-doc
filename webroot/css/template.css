@@ -52,6 +52,7 @@ ul ul {margin: 0;}
 p {margin: 15px 0;}
 strong {font-weight: bold;}
 code {margin: 0 2px; padding: 0 5px; white-space: nowrap; font-family: Consolas, "Liberation Mono", Courier, monospace; background: #edebdd; border-radius: 3px;}
+pre code {color: #c9bf9f; white-space: pre; background: none;}
 em code, strong code {font-style: normal; font-weight: normal;}
 
 /*
