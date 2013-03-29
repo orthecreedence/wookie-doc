@@ -20,6 +20,11 @@ Wookie's documentation is split into several parts:
 - [Plugins](/docs/plugins)<br>
   Wookie provides much functionality (even what some consider core features) in
   the form of plugins.
+- [Core plugins](/docs/core-plugins)<br>
+  Learn how to use the core plugins to make your experience with Wookie easier.
+- [Hooks](/docs/hooks)<br>
+  Hooks allow you to tie in to specific points of execution in the processing of
+  a request.
 - [Writing plugins](/docs/writing-plugins)<br>
   Learn how to write your own plugins for Wookie to extend the functionality to
   your liking.
