@@ -48,6 +48,11 @@ This is the raw [http-request](https://github.com/orthecreedence/http-parse#http
 object It's created by [http-parse](https://github.com/orthecreedence/http-parse),
 the HTTP parsing library used by Wookie.
 
+##### request-data (accessor)
+This accessor allows passing of arbitrary data along with a request. For example
+a `:pre-route` [hook](/docs/hooks) could process part of the request and save it
+so that later routes would have access to it.
+
 ### response (class)
 The response class is used to send a response from Wookie to the connecting
 client by passing it to [send-response](#send-response) or [start-response](#start-response).
