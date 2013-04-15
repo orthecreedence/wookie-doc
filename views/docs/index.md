@@ -46,8 +46,6 @@ which provide key functionality such as parsing GET/POST parameters, file and
 directory serving, etc.
 
 ```lisp
-(universal-time-to-rfc822 (get-universal-time)) ;=> "Tue, 09 Apr 2013 14:04:52 +0800"
-
 (defpackage :my-website
   (:use :cl :wookie :wookie-plugin-export))
 (in-package :my-website)
