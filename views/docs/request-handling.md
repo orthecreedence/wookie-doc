@@ -130,6 +130,11 @@ Here's an example `send-response` usage:
                  :body (load-html-view :homepage)))
 ```
 
+`send-response` can throw the following errors:
+
+- [response-already-sent](#response-already-sent-condition)
+- [socket-closed](http://orthecreedence.github.io/cl-async/tcp#socket-closed)
+
 ### start-response (function)
 ```lisp
 (defun start-response (response &key (status 200) headers))
