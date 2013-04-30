@@ -32,6 +32,11 @@ nav ul li a:hover {color: #d9c382; text-decoration: none;}
 content {display: block; min-height: 300px;}
 content .documentation {padding-bottom: 100px;}
 
+.callout {width: 90%; margin: 20px auto 20px auto; font-weight: bold; font-size: 22px; text-transform: uppercase; }
+.callout ul {text-align: center; list-style: none; margin: 0; padding: 10px 0;}
+.callout ul li {display: inline;}
+.callout ul li a {display: inline-block;}
+
 footer {margin: 100px 0 0 0; padding: 4px 0 30px 0; color: #666; font-size: 11px; border-top: 1px solid #ccc;}
 footer ul {float: left; list-style: none; margin: 0; padding: 0;}
 footer ul li {display: inline-block; padding: 0 6px 0 9px; line-height: 1; border-left: 1px solid #ccc;}

@@ -17,6 +17,8 @@ Wookie's documentation is split into several parts:
 - [Error handling](/docs/error-handling)<br>
   Covers catching and handling of asynchronous errors/conditions while Wookie is
   running.
+- [Configuration](/docs/config)<br>
+  Learn about the configuration options Wookie provides.
 - [Plugins](/docs/plugins)<br>
   Wookie provides much functionality (even what some consider core features) in
   the form of plugins.
@@ -65,14 +67,22 @@ directory serving, etc.
 ;; will load "./assets/images/background.jpg"
 (def-directory-route "/" "./assets")
 
-;; create a listener that accepts connections on port 80
-(let ((listener (make-instance 'listener
-                               :bind nil  ; equivalent to "0.0.0.0" aka "don't care"
-                               :port 80)))
-  ;; start an event loop and pass our listener to Wookie's start-server method
-  (as:start-event-loop
-    (lambda () (start-server listener))
-    ;; it's generally a good idea to catch errors here (otherwise they bubble
-    ;; up to the REPL and Wookie won't have a chance to handle them)
-    :catch-app-errors t))
+;; start an event loop that catches errors (if error are not caught, they wind
+;; up in the REPL which means a non-responsive server!)
+(as:with-event-loop (:catch-app-errors t)
+  ;; create a listener object, and pass it to start-server, which starts Wookie
+  (let* ((listener (make-instance 'listener
+                                  :bind nil  ; equivalent to "0.0.0.0" aka "don't care"
+                                  :port 80))
+         ;; start it!!
+         (server (start-server listener)))
+    ;; stop server on ctrl+c
+    (as:signal-handler 2
+      (lambda (sig)
+        (declare (ignore sig))
+        ;; remove our signal handler (or the event loop will just sit indefinitely)
+        (as:free-signal-handler 2)
+        ;; graceful stop...rejects all new connections, but lets current requests
+        ;; finish.
+        (as:close-tcp-server server)))))
 ```

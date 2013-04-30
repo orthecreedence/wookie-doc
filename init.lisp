@@ -6,17 +6,20 @@
 ;; load all enabled wookie plugins
 (load-plugins :use-quicklisp t)
 
+(defun error-handler (err)
+  (format t "(wookie-doc) Error: ~a~%" err))
+
 (defun start (&key bind (port 8080))
   ;; setup the wookie log
   (setf *log-level* :notice)
+
+  (setf *error-handler* 'error-handler)
 
   ;; load/cache all the views
   (load-views)
 
   ;; start the server
   (let ((listener (make-instance 'listener :bind bind :port port)))
-    (as:start-event-loop
-      (lambda ()
-        (start-server listener))
-      :catch-app-errors nil)))
+    (as:with-event-loop (:catch-app-errors t)
+      (start-server listener))))
 

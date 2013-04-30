@@ -14,6 +14,42 @@ or do some sort of cleanup after a response goes out, you can use hooks.
 
 {{toc}}
 
+### Hooks and futures
+A useful feature of hooks is that if a hook function re running returns a
+[cl-async future](http://orthecreedence.github.io/cl-async/future), Wookie will
+wait for that future to finish before continuing execution on the current
+request.
+
+For instance, if you need to check a user's authentication against your database
+and only want to continue processing the request if the info checks out, you 
+could hook into the `:pre-route` hook and return a future that's finished once
+the user's auth info checks out. Then when the route for the current request is
+loaded, that user is already authenticated.
+
+Note that if multiple functions on the same hook return futures, Wookie will
+wait for *all* of those futures to finish before continuing processing.
+
+### Error handling
+Wookie's hooks are future-aware as explained above, but Wookie also watches the
+futures for errors. If [signal-error](http://orthecreedence.github.io/cl-async/future#signal-error)
+is called on any of the futures Wookie's hook system is waiting on, Wookie will
+*cancel/destroy* the current request __without__ sending a response.
+
+Let's say you're checking user authentication info in `:pre-route`, but the auth
+info is wrong and you don't want the user to even get to the route (why waste
+the CPU cycles on some deadbeat?)...you can send a 401 HTTP response via
+[send-response](/docs/request-handling#send-response) and then call 
+`signal-error` on the hook function's future.
+
+As mentioned, when an error is passed back from a hook function, the request,
+its data, its callbacks, etc etc will all be obliterated. Send back your
+error response *before* signaling an error or the client will be left hanging.
+
+It's important to note that Wookie ignores that actual error signalled by
+`signal-error`. You could just send `t` instead of an error object if you want
+to, but it's best to be more descriptive since there's a chance the error object
+may be used for something in the future.
+
 ### add-hook (function)
 ```lisp
 (defun add-hook (hook function &optional hook-name))
@@ -33,6 +69,29 @@ and also name the hook `:check-request`:
     (declare (ignore res))
     (my-app:make-sure-request-is-ok req))
   :check-request)
+```
+
+Here's an example using futures:
+```lisp
+(add-hook :pre-route
+  (lambda (req res)
+    (let ((future (cl-async-future:make-future)))
+      ;; grab our user from the database
+      (alet ((user-info (my-app:get-user-from-db)))
+        (if user-info
+            ;; got auth info! continue the request
+            (progn
+              ;; allow other parts of the app access to the user info through request-data
+              (setf (request-data req) user-info)
+              ;; let the hook system know we're done here
+              (cl-async-future:finish future))
+            ;; bad auth info (blank user returned). send a "nope" response and boot them
+            (progn
+              (send-response res :status 401 :body "User auth failed!")
+              ;; discontinue the request
+              (signal-error future (make-instance 'error)))))
+      ;; return the future to the hook system for tracking
+      future)))
 ```
 
 ### remove-hook (function)

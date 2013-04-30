@@ -116,7 +116,7 @@ Next, let's make our `plugin.asd` file:
 
 ```lisp
 (wookie:defplugin wookie-plugin-core-get
-  :author "Andrew Danger Lyon <my@email.com>"
+  :author "Andrew Danger Lyon &lt;my@email.com>"
   :license "MIT"
   :version "0.2.1"
   :description "A GET plugin for Wookie"

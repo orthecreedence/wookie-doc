@@ -39,6 +39,14 @@ The HTTP headers that came in with this request. The headers are in plist format
  :connection "close")
 ```
 
+##### request-data (accessor)
+Used to store arbitrary data within a request object.
+
+This comes in handy for things like user authentication. You may have a
+`:pre-route` [hook](/docs/hooks) that looks up a user based on the auth headers,
+and you could store that user into in `request-data` so that whatever route
+loads will have access to the info and won't have to look it up again.
+
 ##### request-uri (accessor)
 This is a [puri](http://www.cl-user.net/asp/libs/PURI) object of the parsed HTTP
 [request resource](#request-resource).

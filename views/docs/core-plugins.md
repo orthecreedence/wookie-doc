@@ -120,7 +120,7 @@ easy to set up simple file/directory serving.
 
 ##### def-directory-route (function)
 ```lisp
-(defun def-directory-route (route-path local-path))
+(defun def-directory-route (route-path local-path &key disable-directory-listing))
   => nil
 ```
 This function takes the path of a URL route and the local path to a directory
@@ -130,13 +130,15 @@ want that folder to be accessible through the url `/assets/images`. You could
 do:
 
 ```lisp
-(def-directory-route "/assets/images" "/images")
+(def-directory-route "/assets/images" "./images")
 ```
 
 Now going to `/assets/images/1234.jpg` in a browser will attempt to load and
-serve the local file `images/1234.jpg`.
+serve the local file `./images/1234.jpg`.
 
 Note that if a file/directory is matched to the directory router but doesn't
 exist, the directory router will call [next-route](/docs/routes#next-route),
 letting your application deal with the non-existent file/directory how it sees
 fit.
+
+Directory listings can be disabled by passing `:disable-directory-listing t`.
