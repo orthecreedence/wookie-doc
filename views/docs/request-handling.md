@@ -224,6 +224,11 @@ by chunk, to S3 using a fictional (but plausible) uploader object:
         (send-response res :body "Upload processed, thxlolol")))))
 ```
 
+### get-socket (method)
+This helper method takes either a [request](#request-class) object or a 
+[response](#response-class) object and returns the [cl-async socket](http://orthecreedence.github.io/cl-async/tcp#socket)
+the given request came in on.
+
 ### response-error (condition)
 This describes an error that occurs while sending a response.
 
