@@ -85,7 +85,7 @@ Let's dive in with a few examples:
     (my-app:send-content-chunk-to-storage chunk-bytes)
     (when finishedp
       (my-app:finish-file)
-      (send-response res :body "Thanks for the file."))))
+      (send-response res :body "Thanks for the file, SUCKER."))))
 ```
 
 ### with-vhost (macro)

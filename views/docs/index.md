@@ -38,6 +38,9 @@ Here are some quick examples to get you started using Wookie. Remember that
 Wookie runs on top of a [cl-async](http://orthecreedence.github.com/cl-async) event loop, so you must start
 Wookie from within an event loop for it to work.
 
+If you need a reference for Wookie, the source for this doc site is built on top
+of Wookie and [is available on github](https://github.com/orthecreedence/wookie-doc).
+
 ### Starting Wookie
 This example shows how to set up a very basic website using Wookie. It uses a
 [listener](/docs/listeners#listener), which describes how people can connect to

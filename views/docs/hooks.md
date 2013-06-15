@@ -15,7 +15,7 @@ or do some sort of cleanup after a response goes out, you can use hooks.
 {{toc}}
 
 ### Hooks and futures
-A useful feature of hooks is that if a hook function re running returns a
+A useful feature of hooks is that if a hook function returns a
 [cl-async future](http://orthecreedence.github.io/cl-async/future), Wookie will
 wait for that future to finish before continuing execution on the current
 request.
@@ -45,7 +45,7 @@ As mentioned, when an error is passed back from a hook function, the request,
 its data, its callbacks, etc etc will all be obliterated. Send back your
 error response *before* signaling an error or the client will be left hanging.
 
-It's important to note that Wookie ignores that actual error signalled by
+It's important to note that Wookie ignores the actual error signalled by
 `signal-error`. You could just send `t` instead of an error object if you want
 to, but it's best to be more descriptive since there's a chance the error object
 may be used for something in the future.
