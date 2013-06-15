@@ -7,7 +7,8 @@
 (load-plugins :use-quicklisp t)
 
 (defun error-handler (err)
-  (format t "(wookie-doc) Error: ~a~%" err))
+  (unless (typep err 'as:tcp-info)
+    (format t "(wookie-doc) UNcaught error: ~a~%" err)))
 
 (defun start (&key bind (port 8080))
   ;; setup the wookie log
