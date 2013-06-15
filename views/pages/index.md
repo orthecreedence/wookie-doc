@@ -11,7 +11,7 @@ of [cl-async](http://orthecreedence.github.com/cl-async) and
 
 *Wookie is very new and considered beta.*
 
-See [Wookie's documentation](/docs).
+See __[Wookie's documentation](/docs).__
 
 ```lisp
 (defpackage :wookie-test
