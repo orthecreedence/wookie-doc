@@ -22,6 +22,7 @@
             (:ul
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
+              (:li (:a :href "/best-practices" "Best practices"))
               (:li (:a :href "/about" "About"))
               ;(:li (:a :href "/guide" "Guide"))
               )))
