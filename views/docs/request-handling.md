@@ -6,7 +6,7 @@ layout: documentation
 Request handling
 ================
 Starting a server and setting up routes is kewl, but unless you know what to do
-once an actual request comes in, it's all just an excersize in academia.
+once an actual request comes in, it's all just an exercise in academia.
 
 Wookie supports simple request/response handling, but also has the ability to
 stream incoming/outgoing chunked HTTP content.
