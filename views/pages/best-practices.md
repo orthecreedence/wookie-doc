@@ -89,7 +89,7 @@ server {
 
         # file not being loaded, forward request to Wookie
         proxy_pass http://wookiedoc;
-        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 h
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
         proxy_redirect off;
         proxy_buffering off;
         proxy_set_header Host $host;
