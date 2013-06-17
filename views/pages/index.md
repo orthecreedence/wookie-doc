@@ -7,7 +7,8 @@ Wookie - An asynchronous HTTP server
 ====================================
 Wookie is an asynchronous HTTP server written in Common Lisp. It is built on top
 of [cl-async](http://orthecreedence.github.com/cl-async) and
-[http-parse](https://github.com/orthecreedence/http-parse).
+[http-parse](https://github.com/orthecreedence/http-parse). Wookie's code is
+hosted on [github](https://github.com/orthecreedence/wookie).
 
 *Wookie is very new and considered beta.*
 
@@ -30,9 +31,5 @@ See __[Wookie's documentation](/docs).__
   (start-server (make-instance 'listener :port 80)))
 ```
 
-### Github
-Wookie's code is hosted on [github](https://github.com/orthecreedence/wookie).
-
-### License
 Wookie is [licensed MIT](https://github.com/orthecreedence/wookie/blob/master/LICENSE).
 
