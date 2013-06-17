@@ -29,3 +29,10 @@ See __[Wookie's documentation](/docs).__
 (as:with-event-loop ()
   (start-server (make-instance 'listener :port 80)))
 ```
+
+### Github
+Wookie's code is hosted on [github](https://github.com/orthecreedence/wookie).
+
+### License
+Wookie is [licensed MIT](https://github.com/orthecreedence/wookie/blob/master/LICENSE).
+
