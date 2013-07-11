@@ -49,7 +49,7 @@ var wookie = {
 
 	init_img_hover: function()
 	{
-		var wimg = $('wookie');
+		var wimg = $(document).getElement('#wookie a');
 		if(!wimg) return;
 		var fx = new Fx.Tween(wimg, {duration: 1000, transition: 'bounce:out', property: 'right'});
 		wimg.addEvent('mouseenter', function(e) {

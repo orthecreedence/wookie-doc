@@ -11,8 +11,8 @@ body {margin: 0; padding: 0; font-family: arial, helvetica; font-size: 14px; lin
 .clear {display: block;}
 /* */
 
-div#wookie {position: fixed; right: -120px; bottom: 0; width: 220px; height: 238px; background: url(/images/template/wookie.png) right bottom no-repeat;}
-div#wookie a {display: block; width: 220px; height: 238px;}
+div#wookie {position: fixed; right: 0; bottom: 0; width: 220px; height: 238px;}
+div#wookie a {display: block; position: absolute; bottom: 0; right: -120px; width: 220px; height: 238px; background: url(/images/template/wookie.png) right bottom no-repeat;}
 div#wookie a:hover {text-decoration: none;}
 div#container {width: 740px; margin: 0 auto;}
 
