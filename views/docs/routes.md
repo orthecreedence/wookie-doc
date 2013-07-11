@@ -35,6 +35,14 @@ the [next-route](#next-route) function).
 This sets up a route in the routing system such that when a request comes in
 that matches on the method/resource, the body will be run.
 
+`method` is a keyword of the method you wish to match the request on. For
+instance, it could be `:get`, `:post`, etc. `method` also accepts *a list of
+keywords* and will match a request to any of them. Finally, `method` accepts
+the keyword `:*` meaning "match on any method."
+
+`resource` is a string resource to match the route on. By default it uses
+regular expression matching.
+
 `:regex` specifies whether the `resource` is a regular expression (matched with
 [cl-ppcre](http://weitz.de/cl-ppcre/)). If a regular expression is selected
 (the default) then regular expression groups can be accessed from the route via
@@ -56,8 +64,10 @@ provided the host matches.
 `bind-request` and `bind-response` are the variables we want to be available to
 the route body that hold our respective [request](/docs/request-handling#request)
 and [response](/docs/request-handling#response) objects for the incoming
-request. If `bind-args` is passed, it will be a list that holds all the matched
-groups from the `resource` regex.
+request.
+
+If `bind-args` is passed, it will be a list that holds all the matched groups
+from the `resource` regex.
 
 Let's dive in with a few examples:
 
@@ -86,6 +96,14 @@ Let's dive in with a few examples:
     (when finishedp
       (my-app:finish-file)
       (send-response res :body "Thanks for the file, SUCKER."))))
+
+;; Match "/users" on both GET/POST
+(defroute ((:get :post) "/users") (req res)
+  (send-response res :body "Our user data is locked down" :status 403))
+
+;; Match any method, any URL
+(defroute (:* ".+") (req res)
+  (send-response res :body "Page not found." :status 404))
 ```
 
 ### with-vhost (macro)
