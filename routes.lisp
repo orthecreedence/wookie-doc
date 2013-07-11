@@ -41,5 +41,5 @@
     (error (e)
       (send-response res :status 500 :body (format nil "~a" e)))))
 
-(defroute (:get ".+") (req res)
+(defroute (:* ".+") (req res)
   (page-not-found res))
