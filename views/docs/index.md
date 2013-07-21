@@ -33,8 +33,8 @@ Wookie's documentation is split into several parts:
 
 <a id="ssl-note"></a>
 ### SSL Note
-If you don't have `cl+ssl` (or OpenSSL) installed on your machine ane you get
-errors while loading Wookie:
+If you don't have `cl+ssl` (or OpenSSL) installed on your machine and you get
+SSL errors while loading Wookie:
 
 ```lisp
 (push :wookie-no-ssl *features*)
