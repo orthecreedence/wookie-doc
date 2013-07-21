@@ -35,6 +35,24 @@
             (:li (:a :href "/" "Wookie home"))
             (:li (:a :href "https://github.com/orthecreedence/wookie" "github"))
             (:li "Powered by Wookie"))
-          (:p "&copy;" (:a :href "http://lyonbros.com" "Lyon Bros. Enterprises, LLC")))))))
+          (:p "&copy;" (:a :href "http://lyonbros.com" "Lyon Bros. Enterprises, LLC"))))
+      (:script
+        "
+<!-- Piwik -->
+<script type=\"text/javascript\">
+  var _paq = _paq || [];
+  _paq.push([\"trackPageView\"]);
+  _paq.push([\"enableLinkTracking\"]);
+
+  (function() {
+    var u=((\"https:\" == document.location.protocol) ? \"https\" : \"http\") + \"://stats.killtheradio.net/\";
+    _paq.push([\"setTrackerUrl\", u+\"piwik.php\"]);
+    _paq.push([\"setSiteId\", \"7\"]);
+    var d=document, g=d.createElement(\"script\"), s=d.getElementsByTagName(\"script\")[0]; g.type=\"text/javascript\";
+    g.defer=true; g.async=true; g.src=u+\"piwik.js\"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->
+        "))))
 
 
