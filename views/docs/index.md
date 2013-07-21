@@ -32,8 +32,7 @@ Wookie's documentation is split into several parts:
   your liking.
 
 <a id="ssl-note"></a>
-SSL Note
---------
+### SSL Note
 If you don't have `cl+ssl` (or OpenSSL) installed on your machine ane you get
 errors while loading Wookie:
 
