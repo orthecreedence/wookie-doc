@@ -31,6 +31,16 @@ Wookie's documentation is split into several parts:
   Learn how to write your own plugins for Wookie to extend the functionality to
   your liking.
 
+<a id="ssl-note"></a>
+SSL Note
+--------
+If you don't have `cl+ssl` (or OpenSSL) installed on your machine ane you get
+errors while loading Wookie:
+
+```lisp
+(push :wookie-no-ssl *features*)
+```
+
 <a id="quick-start"></a>
 Quick start
 -----------
