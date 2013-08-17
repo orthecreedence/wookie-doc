@@ -1,5 +1,5 @@
 (asdf:defsystem wookie-doc
-  :author "Andrew Lyon <andrew@musio.com>"
+  :author "Andrew Danger Lyon <orthecreedence@gmail.com>"
   :licence "MIT"
   :version "0.0.1"
   :depends-on (#:cl-fad #:cl-who #:markdown.cl #:cl-ppcre #:wookie)
