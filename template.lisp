@@ -75,7 +75,7 @@
 
 (defun convert-to-html-id (str)
   "Convert 'Omg Lol Wtf' to 'omg-lol-wtf'"
-  (let* ((str (cl-ppcre:regex-replace-all "[^\\w]" str "-"))
+  (let* ((str (cl-ppcre:regex-replace-all "([^\\w]|_)" str "-"))
          (str (cl-ppcre:regex-replace-all "-+" str "-"))
          (str (cl-ppcre:regex-replace-all "(^-+|-+$)" str "")))
     (string-downcase str)))
