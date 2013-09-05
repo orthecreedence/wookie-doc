@@ -234,6 +234,18 @@ This helper method takes either a [request](#request-class) object or a
 [response](#response-class) object and returns the [cl-async socket](http://orthecreedence.github.io/cl-async/tcp#socket)
 the given request came in on.
 
+### \_method GET var
+When calling Wookie via AJAX, it can be useful to specify more than just your
+standard GET/POST verbs. Since browsers are completely undecided about which
+ones support which verbs from an XHR request, we work around it by copying the
+Rails framework: passing a GET var called `_method`.
+
+    http://mysite.com/api/albums/1234?_method=DELETE
+
+Note that `_method` is case INsensitive. Also note that `_method` *must be
+passed in a GET parameter!* If you pass it as part of the POST body, it *will be
+ignored*.
+
 ### response-error (condition)
 This describes an error that occurs while sending a response.
 
