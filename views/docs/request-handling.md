@@ -229,6 +229,25 @@ by chunk, to S3 using a fictional (but plausible) uploader object:
         (send-response res :body "Upload processed, thxlolol")))))
 ```
 
+### send-100-continue (function)
+```lisp
+(defun send-100-continue (response))
+  => nil
+```
+This function sends a `100 Continue` header on the given response's socket. This
+is mainly meant to be used in conjunction with [defroute's](/docs/routes#defroute)
+`:suppress-100` option. You can probably safely ignore this function (along with
+`:suppress-100`) since Wookie handles everything properly for you anyway. there
+may however be cases where you want fine-tuned control of where/when a `100
+Continue` is sent though (ie, checking a database or something).
+
+If there is no `Expect: 100-continue` header, sending this will probably make
+your client confused, so be sure to check first.
+
+Note that if you don't call `send-100-continue` within a second or so of the
+request coming in, the client will most likely just start dumping the body on
+you without waiting (this is specified in the HTTP 1.1 RFC).
+
 ### get-socket (method)
 This helper method takes either a [request](#request-class) object or a 
 [response](#response-class) object and returns the [cl-async socket](http://orthecreedence.github.io/cl-async/tcp#socket)

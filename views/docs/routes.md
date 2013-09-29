@@ -26,7 +26,8 @@ the [next-route](#next-route) function).
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
-                                          chunk replace
+                                          chunk suppress-100
+                                          replace
                                           vhost)
                     (bind-request bind-response &optional bind-args)
                     &body body))
@@ -52,6 +53,16 @@ case-sensitive.
 `:chunk` tells us that this route is more than willing to stream chunked
 content. In other words, we'll set up a handler in our route using [with-chunking](/docs/request-handling#with-chunking)
 to stream content over HTTP.
+
+`:suppress-100` tells the route that if the client expects a `100 Continue`
+header to be sent before it uploads the request body, *do not send it*. If you
+set `:suppress-100` to `t`, you must send the header yourself using
+[send-100-continue](/docs/request-handling#send-100-continue). This can be
+useful if you have a route that supports chunking (ie will be called directly
+after the headers are parsed) and you need to have some conditions met before
+telling the client to start dumping the body on you. Beware, however, that most
+clients will only give you a finite amount of time (a second or two) to send the
+`100 Continue` header before they will just start dumping the body on you.
 
 `:replace` tells the routing system that this route should replace the first 
 route with the same method/resource in the routing table.
