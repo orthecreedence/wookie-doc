@@ -64,6 +64,16 @@ telling the client to start dumping the body on you. Beware, however, that most
 clients will only give you a finite amount of time (a second or two) to send the
 `100 Continue` header before they will just start dumping the body on you.
 
+Note that `:suppress-100` can also be used in a very specific case: to delay
+chunking of the body until a chunked router can be set up. For instance, it
+makes sense to do database authentication in your `:pre-route` [hook](/docs/hooks#pre-route).
+However, if your hook returns a future that finishes when the auth is checked,
+it's possible that the client has started sending body chunks *before your
+chunked router is hooked in to listen to the chunks*. In this case,
+`:suppress-100` can be used to delay the client until the hook finalizes, and
+then you would call [send-100-continue](/docs/request-handling#send-100-continue)
+once the router has called [with-chunking](/docs/request-handling#with-chunking).
+
 `:replace` tells the routing system that this route should replace the first 
 route with the same method/resource in the routing table.
 
