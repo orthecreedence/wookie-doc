@@ -10,7 +10,7 @@ of [cl-async](http://orthecreedence.github.com/cl-async) and
 [http-parse](https://github.com/orthecreedence/http-parse). Wookie's code is
 hosted on [github](https://github.com/orthecreedence/wookie).
 
-*Wookie is very new and considered beta.*
+*Wookie is somewhat new and considered beta.*
 
 See __[Wookie's documentation](/docs).__
 
