@@ -27,7 +27,7 @@ the [next-route](#next-route) function).
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
                                           chunk suppress-100
-                                          replace
+                                          (replace t)
                                           vhost)
                     (bind-request bind-response &optional bind-args)
                     &body body))
@@ -75,7 +75,12 @@ then you would call [send-100-continue](/docs/request-handling#send-100-continue
 once the router has called [with-chunking](/docs/request-handling#with-chunking).
 
 `:replace` tells the routing system that this route should replace the first 
-route with the same method/resource in the routing table.
+route with the same method/resource in the routing table. If that route doesn't
+exist, the given route will be appended to the end of the routing table (ie, an
+upsert). Note that `:replace` is true by default, since it usually makes more
+sense to replace an existing route than to add a new route to the end of the
+routing table (where it will be ignored until it's twin is removed from the 
+table).
 
 The `:vhost` keyword specifies that this route should only load for a specific
 `Host: ...` header. This is a string in the format "host.com" or
