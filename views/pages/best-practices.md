@@ -39,6 +39,20 @@ source. It is used as a last resort to ensure the well-being of the application
 as a whole. If errors escape to the top-level, try to figure out what happened
 and fix the situation.
 
+### Application auth
+As mentioned elsewhere, it makes sense to check your application authentication
+in the [:pre-route hook](/docs/hooks#pre-route) by returning a
+[future](/docs/hooks#hooks-and-futures) from the hook that finishes if auth was
+successful (and has an error triggered on it if unsuccessful). This is useful
+because you can check authentication via a database and immediately cancel the
+request if the auth info is incorrect, saving your app from processing a request
+it's just going to throw out.
+
+However, this has some side effects when dealing with chunked data. Please
+familiarize yourself with [defroute's options](/docs/routes#defroute)
+(specifically `:suppress-100` and `:buffer-body`) and be sure to read the guide
+on [successfully handling chunked data when using futures with :pre-route](/docs/hooks#pre-route).
+
 ### Reverse Proxy
 Wookie can be run by itself, but because it's new and hasn't been battle tested,
 it's important to be weary of running it on its own in the wild. There may be 

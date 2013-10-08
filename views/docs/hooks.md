@@ -173,12 +173,16 @@ you want to tell the client to wait to send the body until we say it's ok:
 Looks great! Right? Not quite there yet. There are two things that could go
 horribly wrong:
 
-1. The client could just not wait for use to send "100 Continue", in which case
-we wind up with the same problem as before.
-1. The client could just not send chunked data to this route, meaning we don't
-have a chance to tell it to wait for us to send the body over.
+1. The client could just not wait for us to send "100 Continue", in which case
+we wind up with the same problem as before. It's in the HTTP spec that a client
+must not wait indefinitely for the "100 Continue" header to come through if it
+sends an "Expect: 100-continue" in the request. The length is waits is up to the
+client, so we have to be prepared for this possibility.
+1. The client could just not send chunked data to this route (ie, it doesn't
+send "Expect: 100-continue" and doesn't use "Transfer-encoding: chunked"),
+meaning we don't have a chance to tell it to wait for us to send the body over.
 
-However, you have one more trick up your sleeve:
+However, you have one more trick up your jedi sleeve:
 
 ```lisp
 ;; note here we specify both :suppress-100 *and* :buffer-body
@@ -201,6 +205,10 @@ route calls `with-chunking`. Even if the client doesn't chunk the body or the
 client does chunk and every chunk comes in before we set up our chunking
 handler, the handler will always be called with the missed data (and
 `last-chunk-p` will still be accurate).
+
+While this is all fine and great, it means that your app server is going to be
+saving large chunks of data in memory while waiting for your DB to respond, so
+keep those auth queries simple and fast!
 
 ##### :post-route
 ```lisp
