@@ -29,6 +29,9 @@ loaded, that user is already authenticated.
 Note that if multiple functions on the same hook return futures, Wookie will
 wait for *all* of those futures to finish before continuing processing.
 
+See notes on [using chunking and futures with :pre-route](/docs/hooks#pre-route)
+below.
+
 ### Error handling
 Wookie's hooks are future-aware as explained above, but Wookie also watches the
 futures for errors. If [signal-error](http://orthecreedence.github.io/cl-async/future#signal-error)
@@ -127,6 +130,77 @@ object](http://orthecreedence.github.com/cl-async/tcp#socket).
 (lambda (request response) ...)
 ```
 Called directly before the routing of a request takes place.
+
+`:pre-route` is probably the best place to check application authentication. By
+this time, you have all the GET variables and all your request headers
+(including the `Authorization` header). `:pre-route` can return a future that
+finishes either with a value (ignored) or has an error triggered on it depending
+on whether authentication was successful or not.
+
+However, this poses some problems. Let's say you want to support large file
+uploads in your app:
+
+```lisp
+(defroute (:post "/files" :chunk t) (req res)
+  (with-chunking (chunk last-chunk-p)
+    ;; save file to storage system chunk by chunk
+    ))
+```
+
+However, if you check auth on this call in `:pre-route` via a future, it's very
+possible that the client will start sending the body chunks *before* your
+[with-chunking](/docs/request-handling#with-chunking) handler is called, meaning
+body chunks that come in in the meantime are gone. Forever.
+
+Don't lose hope though, eager app developer! You can specify to your route that
+you want to tell the client to wait to send the body until we say it's ok:
+
+```lisp
+;; note the :suppress-100 t here, which tells Wookie to not blindly send a
+;; "100 Continue" header for us (we'll be doing it manually in our route).
+(defroute (:post "/files" :chunk t :suppress-100 t) (req res)
+  ;; IF the client sent an "Expect: 100-continue" header, send back our, "yes
+  ;; please continue" header, instructing the client to send the body now that
+  ;; our route is set up.
+  (when (string= (getf (request-headers req) :transfer-encoding)
+                 "chunked")
+    (send-100-continue res))
+  (with-chunking (chunk last-chunk-p)
+    ;; save file to storage system chunk by chunk
+    ))
+```
+
+Looks great! Right? Not quite there yet. There are two things that could go
+horribly wrong:
+
+1. The client could just not wait for use to send "100 Continue", in which case
+we wind up with the same problem as before.
+1. The client could just not send chunked data to this route, meaning we don't
+have a chance to tell it to wait for us to send the body over.
+
+However, you have one more trick up your sleeve:
+
+```lisp
+;; note here we specify both :suppress-100 *and* :buffer-body
+(defroute (:post "/files" :chunk t :suppress-100 t :buffer-body t) (req res)
+  ;; IF the client sent an "Expect: 100-continue" header, send back our, "yes
+  ;; please continue" header, instructing the client to send the body now that
+  ;; our route is set up.
+  (when (string= (getf (request-headers req) :transfer-encoding)
+                 "chunked")
+    (send-100-continue res))
+  (with-chunking (chunk last-chunk-p)
+    ;; save file to storage system chunk by chunk
+    ))
+```
+
+So we added `:buffer-body t` to our route options, meaning that if the client
+starts chunking for any reason before we call `with-chunking`, all lost chunks
+will be saved into a buffer (in order) and passed as one large chunk once our
+route calls `with-chunking`. Even if the client doesn't chunk the body or the 
+client does chunk and every chunk comes in before we set up our chunking
+handler, the handler will always be called with the missed data (and
+`last-chunk-p` will still be accurate).
 
 ##### :post-route
 ```lisp

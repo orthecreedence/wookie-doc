@@ -26,7 +26,7 @@ the [next-route](#next-route) function).
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
-                                          chunk suppress-100
+                                          chunk buffer-body suppress-100
                                           (replace t)
                                           vhost)
                     (bind-request bind-response &optional bind-args)
@@ -53,6 +53,19 @@ case-sensitive.
 `:chunk` tells us that this route is more than willing to stream chunked
 content. In other words, we'll set up a handler in our route using [with-chunking](/docs/request-handling#with-chunking)
 to stream content over HTTP.
+
+`:buffer-body` tells the route that if we're expecting chunking (`:chunk t`)
+and the body chunks start coming in *before* [with-chunking](/docs/request-handling#with-chunking)
+is called, then the body chunked will be saved into a buffer until we call
+`with-chunking` in the route. Note that you'll never need this unless your
+`:pre-route` hook returns a future (in which case, setting up the route and
+calling `with-chunking` will not happen until the future finishes, during which
+time body chunks may be sent by the client). `:buffer-body` is also useful if
+`:pre-route` returns a future and the client does not send chunked data (but one
+payload with all data), in which case the route's `with-chunking` handler will
+be called with one large body "chunk" (the entire body) the instance
+`with-chunking` is called. This prevents you from ever losing HTTP body data
+when [using futures in :pre-route](/docs/hooks#pre-route).
 
 `:suppress-100` tells the route that if the client expects a `100 Continue`
 header to be sent before it uploads the request body, *do not send it*. If you
