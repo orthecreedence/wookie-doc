@@ -25,8 +25,10 @@ create a hook system and plugin system that allows just about any functionality
 to be tacked on after the fact. So far the results have been favorable, with
 every web server feature I've needed so far able to be provided by a plugin.
 
-I have not used Wookie in a production environment yet, so still consider the
-project to be in beta until it has been battle-tested.
+Note that while Wookie should still be considered *beta*, it's now in production
+driving both the API and the website for my latest project, [Turtl](https://turtl.it/).
+Note that Turtl is [open-source](https://github.com/turtl), so feel free to
+browse the source for ideas on how to use Wookie.
 
 The dog (Wookie)
 ----------------
