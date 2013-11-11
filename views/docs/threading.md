@@ -23,7 +23,8 @@ because of it):
 
 ```lisp
 (defun start-wookie ()
-  (let* ((wookie:*state* (make-instance 'wookie:wookie-state)))
+  ;; this let turns wookie:*state* into a thread-local variable
+  (let ((wookie:*state* (make-instance 'wookie:wookie-state)))
     ;; load our plugins
     (wookie:load-plugins)
     ;; load our homepage route
@@ -42,6 +43,7 @@ set them into your global state.
 
 ```lisp
 (defun start-wookie ()
+  ;; this let turns wookie:*state* into a thread-local variable
   (let* ((routes (wookie:wookie-state-routes wookie:*state*))
          (plugins (wookie:wookie-state-plugins wookie:*state*))
          ;; create a new state, but store our routes/plugins from the original,
