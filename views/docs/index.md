@@ -30,6 +30,9 @@ Wookie's documentation is split into several parts:
 - [Writing plugins](/docs/writing-plugins)<br>
   Learn how to write your own plugins for Wookie to extend the functionality to
   your liking.
+- [Threading](/docs/threading)<br>
+  Gives examples on running Wookie in a threaded context (for instance, multiple
+  Wookies running on different ports in the same lisp instance).
 
 <a id="ssl-note"></a>
 ### SSL Note
