@@ -5,67 +5,98 @@ layout: documentation
 
 Threading
 =========
-There are instances where you want to run multiple instances of Wookie in the
-same process. For instance, if you're running an app server with four cores, you
-can make use of all four cores by starting Wookie on four separate ports in the
-same lisp process. This will give you the best of both worlds: asynchronous HTTP
-handling that utilizes all of your server's cores. Keep in mind that you'll most
-likely need a reverse proxy to distribute requests to the different ports you
-open (see [best practices](/best-practices)).
+Sometimes you'll want to run multiple instances of Wookie in the same lisp
+process, a thread for each Wookie. This allows you the best of both worlds: an
+async app server that utilizes all the cores of the machine you're on.
 
-However, doing so requires some special attention. As of version 0.3.3, Wookie
-stores all server state in one global object: `wookie:*state*`. This object is
-by default created for you while loading Wookie, but you can also create your
-own instance of it via the `wookie-state` class. This allows you to create a
-thread-local variable in each of your threads via `let` that will keep your
-Wookie threads from sharing state (and possibly running into corruption issues
-because of it):
+There are two basic ways you can do this. You can run the same app on multiple
+ports (a thread for each port) or different apps on different ports.
 
-```lisp
-(defun start-wookie ()
-  ;; this let turns wookie:*state* into a thread-local variable
-  (let ((wookie:*state* (make-instance 'wookie:wookie-state)))
-    ;; load our plugins
-    (wookie:load-plugins)
-    ;; load our homepage route
-    (wookie:defroute (:get "/") (req res) (wookie:send-response res :body "Thanks for stopping by."))
-    (as:with-event-loop ()
-      (wookie:start-server (make-instance 'wookie:listener :port 6969)))))
+Wookie tracks all of its state (hooks, routes, plugins) in a global variabe,
+`wookie:*state*`, which is an instance of the `wookie-state` class. This can be
+bound to a thread-local variable (if needed), giving you a safe way to keep
+states of different threads from bumping into each other.
 
-(dotimes (i 4)
-  ;; assumes you have bordeaux-threads loaded
-  (bt:make-thread 'start-wookie))
-```
+Note that if using multiple ports, you'll likely need some sort of reverse proxy
+to distribute incoming requests to your app (see [best practices](/best-practices)).
 
-Note that this example reloads the routes and the plugins for each thread. Since
-routes and plugins are by default read-only, you can set them up once and then
-set them into your global state.
+Same app, multiple ports
+------------------------
+This is the easiest way to run multiple Wookie instances: you load your plugins,
+load your app-specific hooks, and define all your app's routes. This happens on
+load (not when you start the server). This way by the time you actually start
+your threads, all the state is set up and from here on out, Wookie will only be
+reading values from the state, not writing them...meaning all your threads can
+use the global state without fear of corruption.
+
+However, you *cannot* modify hooks, routes, or plugins once your setup is done!
+If you do this, you're asking for trouble.
+
+Here's an example:
 
 ```lisp
-(defun start-wookie ()
-  ;; this let turns wookie:*state* into a thread-local variable
-  (let* ((routes (wookie:wookie-state-routes wookie:*state*))
-         (plugins (wookie:wookie-state-plugins wookie:*state*))
-         ;; create a new state, but store our routes/plugins from the original,
-         ;; global state in it. this lets us load our routes/plugins once, and
-         ;; use them in each thread.
-         (wookie:*state* (make-instance 'wookie:wookie-state
-                                        :routes routes
-                                        :plugins plugins)))
-    (as:with-event-loop ()
-      (wookie:start-server (make-instance 'wookie:listener :port 6969)))))
+(load-plugins)
 
-;; load our plugins
-(wookie:load-plugins)
+(defroute (:get "/") (req res)
+  (send-response res :body "Welcome to my homepage!"))
 
-;; load our homepage route
-(wookie:defroute (:get "/") (req res) (wookie:send-response res :body "Thanks for stopping by."))
+(defun start-instance (port)
+  (bt:make-thread
+    (lambda ()
+      (as:with-event-loop ()
+        (start-server (make-instance 'listener :port port))))))
 
-(dotimes (i 4)
-  ;; assumes you have bordeaux-threads loaded
-  (bt:make-thread 'start-wookie))
+;; all the setup is done! from here on out, our state will be read only. now
+;; start our instances, all of which will use the global wookie:*state*
+(loop for port from 8000 to 8003 do
+  (start-instance port))
 ```
 
-Note that if you dynamically load or define routes/plugins while the threads are
-running, you run the risk of data corruption.
+Easy right? Just remember, don't change your server state once the app threads
+are started!
+
+Different apps, multiple ports
+------------------------------
+There may be times when you want different apps running on different ports and
+you want to use one lisp instance to do so. In this case, you want to give each
+thread its own instance of the `wookie-state` class. This can be done easily
+using a `let` form wrapping the inside of our threads, which creates a
+thread-local variable and ensures that when a thread references `wookie:*state*`
+it is reading its own verison, not the global version.
+
+To do this, you'll want to set up your plugins, hooks, and routes *inside* each
+thread (after binding your thread-local state variable).
+
+__NOTE:__ ASDF is a whiny little baby when it comes to threading, and Wookie's
+`load-plugins` function uses ASDF. What this means is that when you call
+`load-plugins` in each thread, you'll have to implement locking to keep the
+threads from calling it at the same time.
+
+Here's an example:
+
+```lisp
+(defparameter *plugin-lock* (bt:make-lock))
+
+(bt:make-thread
+  (lambda ()
+    ;; this let makes wookie:*state* a thread-local variable
+    (let ((wookie:*state* (make-instance 'wookie-state)))
+      ;; lock our ASDF ops!!
+      (bt:with-lock-held (*plugin-lock*)
+        (load-plugins))
+      (defroute (:get "/") (req res) (send-response res :body "Welcome to app1!!"))
+      (as:with-event-loop ()
+        (start-server (make-instance 'listener :port 8000))))))
+
+(bt:make-thread
+  (lambda ()
+    ;; this let makes wookie:*state* a thread-local variable
+    (let ((wookie:*state* (make-instance 'wookie-state)))
+      ;; lock our ASDF ops!!
+      (bt:with-lock-held (*plugin-lock*)
+        (load-plugins))
+      (defroute (:get "/") (req res) (send-response res :body "This is app2."))
+      (as:with-event-loop ()
+        (start-server (make-instance 'listener :port 8001))))))
+```
 
