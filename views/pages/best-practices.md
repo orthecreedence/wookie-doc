@@ -53,6 +53,33 @@ familiarize yourself with [defroute's options](/docs/routes#defroute)
 (specifically `:suppress-100` and `:buffer-body`) and be sure to read the guide
 on [successfully handling chunked data when using futures with :pre-route](/docs/hooks#pre-route).
 
+### Large file uploads via XHR
+It's becoming increasingly more popular and relevant to have your entire app
+(logic, templating, etc) live entirely in javascript land. Because of this,
+you'll find yourself dealing with XHR a lot.
+
+Although XHR has gotten some nice improvements since the HTML5 frenzy started,
+it still doesn't support chunking while uploading data. This means that while
+you may *want* to stream upload data from one location to another through
+Wookie, browsers will just send the entire thing as one big chunk with a
+`Content-Length` header specified.
+
+However, as of Wookie 0.3.6 there's a workaround:
+
+```lisp
+;; note we use :force-chunking here
+(defroute (:post "/uploads" :chunk t :force-chunking t) (req res)
+  (with-chunking (chunk lastp)
+    ...))
+```
+
+The `:force-chunking` value in [defroute](/docs/routes#defroute) tells Wookie
+that even though the request may come in as one continuous body block (thanks
+to XHR being insensitive to our needs), we want to call our [with-chunking](/docs/request-handling#with-chunking)
+handler once for each *packet* that comes in. This saves us from having to
+buffer an entire file into memory, letting us stream it off to wherever it needs
+to go even if the client doesn't think it's a good idea.
+
 ### Reverse Proxy
 Wookie can be run by itself, but because it's new and hasn't been battle tested,
 it's important to be weary of running it on its own in the wild. There may be 
