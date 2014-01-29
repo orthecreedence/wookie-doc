@@ -26,7 +26,7 @@ the [next-route](#next-route) function).
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
-                                          chunk buffer-body suppress-100 force-chunking
+                                          chunk (buffer-body t) suppress-100 force-chunking
                                           (replace t)
                                           vhost)
                     (bind-request bind-response &optional bind-args)

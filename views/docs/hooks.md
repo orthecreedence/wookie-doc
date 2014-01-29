@@ -198,6 +198,9 @@ However, you have one more trick up your jedi sleeve:
     ))
 ```
 
+__NOTE:__ As of Wookie 0.3.6 `:buffer-body` is `t` by default. Without it, data
+would be lost into the ether which doesn't scream of sane defaults.
+
 So we added `:buffer-body t` to our route options, meaning that if the client
 starts chunking for any reason before we call `with-chunking`, all lost chunks
 will be saved into a buffer (in order) and passed as one large chunk once our
