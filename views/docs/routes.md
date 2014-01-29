@@ -26,7 +26,7 @@ the [next-route](#next-route) function).
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
-                                          chunk buffer-body suppress-100
+                                          chunk buffer-body suppress-100 force-chunking
                                           (replace t)
                                           vhost)
                     (bind-request bind-response &optional bind-args)
@@ -86,6 +86,14 @@ chunked router is hooked in to listen to the chunks*. In this case,
 `:suppress-100` can be used to delay the client until the hook finalizes, and
 then you would call [send-100-continue](/docs/request-handling#send-100-continue)
 once the router has called [with-chunking](/docs/request-handling#with-chunking).
+
+`:force-chunking` is a boolean used to tell the route that if we expect chunking
+(`:chunk t`) and the client did not send the `Transfer-Encoding: Chunked`
+header, we still want to stream in the body packet-by-packet through
+[with-chunking](/docs/request-handling#with-chunking). This is mainly useful for
+large file uploads when sent by XHR since browsers don't support
+streaming/chunked file uploads. It doesn't make any sense to buffer the
+entire file into memory when you expect/want it to be streamed anyway.
 
 `:replace` tells the routing system that this route should replace the first 
 route with the same method/resource in the routing table. If that route doesn't
