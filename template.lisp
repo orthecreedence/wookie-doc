@@ -88,7 +88,7 @@
 
   (let* ((headers nil)
          (str (cl-ppcre:regex-replace-all
-                (cl-ppcre:create-scanner "^((#{1,3})\\s*(.*?)(\\s*#+)?)$" :multi-line-mode t)
+                (cl-ppcre:create-scanner "^((#{1,6})\\s*(.*?)(\\s*#+)?)$" :multi-line-mode t)
                 str
                 (lambda (match &rest regs)
                   (declare (ignore match))
@@ -108,7 +108,7 @@
                                 :type ""
                                 :id id
                                 :level (- level 1)) headers)
-                    (concatenate 'string "<a id=\"" id "\"></a>" markdown.cl::*nl* tag)))))
+                    (concatenate 'string "<a class=\"toc-anchor\" id=\"" id "\"></a>" markdown.cl::*nl* tag)))))
          (headers (reverse headers))
          ;; finds top-level headers (<h1>)
          (header-search-fn (lambda (header) (zerop (getf header :level)))))
@@ -144,7 +144,7 @@
    removes whitespace preceding the replacment so we don't confuse the markdown
    parser, and adds whitespace around the tag for easy <p> removal."
   (cl-ppcre:regex-replace-all
-    (cl-ppcre:create-scanner "^\\s*{{{(/?[a-z0-9]+(\.[a-z0-9 -]+)?)}}}" :multi-line-mode t)
+    (cl-ppcre:create-scanner "^\\s*{{{(/?[a-z0-9]+((\.[a-z0-9 -]+)+)?)}}}" :multi-line-mode t)
     markdown
     (format nil "~c~c{{tpl|tag|\\1}}~c~c" #\newline #\newline #\newline #\newline)))
 
@@ -171,7 +171,7 @@
                            (if dot
                                (format nil "<~a class=\"~a\">"
                                        (subseq tag 0 dot)
-                                       (subseq tag (1+ dot)))
+                                       (substitute #\space #\. (subseq tag (1+ dot))))
                                (format nil "<~a>" tag)))))))))
     html))
 
@@ -183,43 +183,30 @@
          (markdown-header (when markdown-header (aref markdown-header 0)))
          (parsed-headers (parse-markdown-header markdown-header))
          (markdown-str (cl-ppcre:regex-replace *scanner-md-header* markdown-str ""))
-         (markdown-str (format-code-blocks markdown-str))
-         (markdown-str (generate-table-of-contents markdown-str))
-         (markdown-str (parse-special-tags markdown-str))
-         (html (markdown.cl:parse markdown-str))
+         (raw (if (string= (getf parsed-headers :markdown) "off")
+                  markdown-str
+                  nil))
+         (markdown-str (unless raw (format-code-blocks markdown-str)))
+         (markdown-str (unless raw (generate-table-of-contents markdown-str)))
+         (markdown-str (unless raw (parse-special-tags markdown-str)))
+         (html (if raw
+                   raw
+                   (markdown.cl:parse markdown-str)))
          (html (fix-anchors html))
          (html (finish-special-tags html)))
     (values html parsed-headers)))
 
-(defun test ()
-  (process-markdown-view
-"---
-title: Documentation
-layout: default
----
-
-# Turtl Documentation
-
-{{{div.docs}}}
-{{{div.doc-sec}}}
-### [Clients](/docs/clients/index)
-- [App](/docs/clients/app/index)
-  - [Architecture](/docs/clients/app/architecture)
-  - [Encryption](/docs/clients/app/encryption)
-  - [Local storage / Syncing](/docs/clients/app/local_db)
-  - [Packaged libraries](/docs/clients/app/libraries)
-- [Extensions](/docs/clients/extensions)
-{{{/div}}}
-
-
-{{{div.doc-sec}}}
-### [Server](/docs/server/index)
-  - [Architecture](/docs/server/architecture)
-  - [API documentation](/docs/server/api/index)
-    - [Users](/docs/server/api/users)
-{{{/div}}}
-{{{/div}}}
-"))
+(defun save-view (view-name file ext)
+  "Load a file's contents from the given `file` var, parse it, and save the 
+   contents into the view of the given name."
+  (cond ((string= ext ".lisp")
+         (load file))
+        ((string= ext ".md")
+         (multiple-value-bind (html parsed-headers)
+             (process-markdown-view (file-contents file))
+           (setf (gethash view-name *views*)
+                 (list :meta parsed-headers
+                       :html html))))))
 
 (defun load-views (&key subdir (clear t) (view-directory (format nil "~a/views" *root*)))
   "Load and cache all view files."
@@ -233,14 +220,7 @@ layout: default
            (let* ((file-str (namestring file))
                   (ext (subseq file-str (or (position #\. file-str :from-end t) (length file-str))))
                   (view-name (generate-view-name view-directory file-str)))
-             (cond ((string= ext ".lisp")
-                    (load file))
-                   ((string= ext ".md")
-                    (multiple-value-bind (html parsed-headers)
-                        (process-markdown-view (file-contents file))
-                      (setf (gethash view-name *views*)
-                            (list :meta parsed-headers
-                                  :html html)))))))))
+             (save-view view-name file ext)))))
   ;; process modules (only after ALL views are loaded)
   (loop for k being the hash-keys of *views*
         for v being the hash-values of *views* do
