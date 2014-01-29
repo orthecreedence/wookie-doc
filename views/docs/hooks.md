@@ -162,8 +162,8 @@ you want to tell the client to wait to send the body until we say it's ok:
   ;; IF the client sent an "Expect: 100-continue" header, send back our, "yes
   ;; please continue" header, instructing the client to send the body now that
   ;; our route is set up.
-  (when (string= (getf (request-headers req) :transfer-encoding)
-                 "chunked")
+  (when (string= (getf (request-headers req) :expect)
+                 "100-continue")
     (send-100-continue res))
   (with-chunking (chunk last-chunk-p)
     ;; save file to storage system chunk by chunk
