@@ -9,24 +9,6 @@ Wookie provides configuration options for much of its functionality.
 
 {{toc}}
 
-### \*log-level\*
-This var determines what level of logging Wookie will use, and can be one of
-
-- `:emerg`
-- `:error`
-- `:warning`
-- `:notice`
-- `:info`
-- `:debug`
-
-These follow \*nix syslog convention. Wookie normally logs to `\*standard-output\*`
-but this can be changed by setting [\*log-output\*](#log-output).
-
-### \*log-output\*
-Holds a stream that Wookie will write to. This could be a TCP stream to a
-logging server, a file stream, etc. If `nil` or `t`, will just log straight to
-standard output (the default).
-
 ### \*error-handler\*
 This is covered in the [error handling](/docs/error-handling) section, but worth
 mentioning here as well.
