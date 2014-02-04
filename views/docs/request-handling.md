@@ -68,7 +68,7 @@ client by passing it to [send-response](#send-response) or [start-response](#sta
 It is passed to all routes defined by [defroute](/docs/routes#defroute).
 
 ##### response-headers (accessor)
-This is the accessor for the headers to send back to the client. They are plis
+This is the accessor for the headers to send back to the client. They are in plist
 format:
 ```lisp
 (:content-type "application/json"
