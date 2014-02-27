@@ -10,7 +10,9 @@ of [cl-async](http://orthecreedence.github.com/cl-async) and
 [http-parse](https://github.com/orthecreedence/http-parse). Wookie's code is
 hosted on [github](https://github.com/orthecreedence/wookie).
 
-*Wookie is somewhat new and considered beta.*
+*Wookie is somewhat new and considered beta.* That said, it is now in production
+powering the backend of [Turtl](https://turtl.it/), an open-source encrypted
+storage platform.
 
 See __[Wookie's documentation](/docs).__
 
