@@ -71,3 +71,7 @@ ul.gallery li a {display: block; line-height: .1em;}
 ul.gallery li a img {border: 1px solid #666;}
 ul.gallery li a img:hover {border: 1px solid #000;}
 
+body.apps content ul {margin: 24px 0; padding: 0 10px; list-style: none;}
+body.apps content ul li {padding: 16px 0; border-bottom: 1px solid #ccc;}
+body.apps content ul li img:first-child {float: left; margin: 3px 6px 0 0;}
+

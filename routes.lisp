@@ -22,6 +22,10 @@
   (let ((body (load-view :pages/about)))
     (send-response res :headers '(:content-type "text/html") :body body)))
 
+(defroute (:get "/apps") (req res)
+  (let ((body (load-view :pages/apps :data '(:body-class "apps"))))
+    (send-response res :headers '(:content-type "text/html") :body body)))
+
 (defroute (:get "/refresh-views") (req res)
   (load-views)
   (send-response res :body "Views refreshed!!"))

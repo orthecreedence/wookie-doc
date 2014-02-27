@@ -13,7 +13,7 @@
       ;; syntax highlighting
       (:link :rel "stylesheet" :href "/js/highlight-lisp/themes/wookie.css" :id "hl-style")
       (:script :src "/js/highlight-lisp/highlight-lisp.js"))
-    (:body
+    (:body :class (getf data :body-class)
       (:div :id "wookie" (:a :href "/" "&nbsp;"))
       (:div :id "container"
         (:header
@@ -23,6 +23,7 @@
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
               (:li (:a :href "/best-practices" "Best practices"))
+              (:li (:a :href "/apps" "Apps"))
               (:li (:a :href "/about" "About"))
               ;(:li (:a :href "/guide" "Guide"))
               )))
