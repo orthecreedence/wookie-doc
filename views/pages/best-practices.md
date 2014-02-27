@@ -11,6 +11,23 @@ used more in production.
 
 {{toc}}
 
+### When to use Wookie
+Wookie is, by nature, asynchronous. This means that it really shines when your
+app is doing a lot of network IO: grabbing results from APIs, calling databases,
+and any other network-based communication.
+
+If you're building an app that does a lot more *communication* than *processing*
+and the drivers you need [are available](http://orthecreedence.github.io/cl-async/drivers),
+Wookie is a good choice. If your app does a lot of CPU work, number crunching,
+file IO, then it's probably best to stick to a threaded server like the
+excellent [Hunchentoot](http://weitz.de/hunchentoot/).
+
+Keep in mind that if your app would benefit by using Wookie and a driver for a
+service you're using in your infrastructure isn't included, you can feel free to
+[open an issue in the cl-async Github](https://github.com/orthecreedence/cl-async/issues)
+for that driver and I'll try to build it (or convert an existing one) as fast as
+I can...feel free to take a stab at it yourself as well =].
+
 ### Error handling
 There is a [section covering error handling](/docs/error-handling) in the docs,
 but I feel this is yet another chance to reiterate.
