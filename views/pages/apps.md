@@ -8,7 +8,7 @@ Apps powered by Wookie
 
 - ![turtl](https://turtl.it/images/favicon.png) [__Turtl__](https://turtl.it/): an
 open-source, encrypted storage platform. Wookie drives both the Turtl website
-and the [API](https://github.com/turtl.api).
+and the [API](https://github.com/turtl/api).
 - ![wookie](/favicon.png) __This website!__ The [source is available on Github](https://github.com/orthecreedence/wookie-doc),
 and is a great reference.
 
