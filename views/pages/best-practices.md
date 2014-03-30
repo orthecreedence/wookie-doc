@@ -135,23 +135,20 @@ server {
     error_log /var/log/www/wookie.beeets.com-error.log;
 
     location / {
-        # serve static content
-        if (-f $request_filename) {
-            # NginX can add caching headers to your static content, adding to the app's performance
-            add_header Cache-Control "public, max-age=86400";
-            break;
-        }
-        if (-d $request_filename) {
-            break;
-        }
+        rewrite ^(.*\.)v[0-9\.]+\.(css|js|gif|png|jpg)$ $1$2 last;
+        try_files $uri @proxysite;
 
-        # file not being loaded, forward request to Wookie
+        add_header Cache-Control "public, max-age=315360000";
+    }
+
+    location @proxysite {
         proxy_pass http://wookiedoc;
-        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 h
         proxy_redirect off;
         proxy_buffering off;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $remote_addr;
     }
+
 }
 ```
