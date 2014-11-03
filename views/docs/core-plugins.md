@@ -111,7 +111,7 @@ Let's set a login cookie that expires in one day:
           (set-cookie res "user" unique-hash :max-age 86400)
           (send-response res :body "login success!"))
         ;; error!
-        (send-response res :status 401 "login failed."))))
+        (send-response res :status 401 :body "login failed."))))
 ```
 
 ### directory-router (plugin)
