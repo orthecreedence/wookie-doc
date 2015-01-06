@@ -23,6 +23,7 @@
               (:li (:a :href "/" "Home"))
               (:li (:a :href "/docs" "Documentation"))
               (:li (:a :href "/best-practices" "Best practices"))
+              (:li (:a :href "/faq" "FAQ"))
               (:li (:a :href "/apps" "Apps"))
               (:li (:a :href "/about" "About"))
               ;(:li (:a :href "/guide" "Guide"))
