@@ -278,6 +278,13 @@ Rails framework: passing a GET var called `_method`.
 
     http://mysite.com/api/albums/1234?_method=DELETE
 
+The above URL would match the following route:
+
+```lisp
+(defroute (:delete "/api/albums/([0-9]+)") (req res args)
+  ...)
+```
+
 Note that `\_method` is case INsensitive. Also note that `\_method` *must be
 passed in a GET parameter!* If you pass it as part of the POST body, it *will be
 ignored*.
