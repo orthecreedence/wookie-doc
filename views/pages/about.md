@@ -5,11 +5,11 @@ layout: default
 
 About
 =====
-Wookie originally started as a port of Hunchentoot to use cl-async. As I got
-deeper in, I realized that there would have to be a lot of changes that weren't
-necessarily intuitive. The reality is that Hunchentoot was build to be threaded
-and if converted, would always be the strange genetic freak baby of synchronous
-and asynchronous.
+Wookie, named after [my dog Wookie](#wookie-dog), started out as an async port
+of the excellent [Hunchentoot server](http://weitz.de/hunchentoot/). As I got
+deeper in, I realized that Hunchentoot was, at its core, built to be threaded.
+If converted, it would forever live out its days as the strange genetic freak
+baby of synchronous and asynchronous.
 
 Once I realized this, I started experimenting with doing HTTP in async. The most
 difficult part is correctly parsing the protocol. I built [a separate library
@@ -20,16 +20,15 @@ into cl-async.
 
 Wookie was born!
 
-I wanted to keep the Wookie core as lean and simple as possible, so I decided to
-create a hook system and plugin system that allows just about any functionality
-to be tacked on after the fact. So far the results have been favorable, with
-every web server feature I've needed so far able to be provided by a plugin.
+Since then, http-parse has been replaced by the blazing fast [fast-http](https://github.com/fukamachi/fast-http),
+and Wookie has matured quite a bit. It has managed to keep its core small and
+support any needed functionality via its plugin system. This makes Wookie fast,
+lean, and simple.
 
-Note that while Wookie should still be considered *beta*, it's now in production
-driving both the API and the website for my latest project, [Turtl](https://turtl.it/).
-Note that Turtl is [open-source](https://github.com/turtl), so feel free to
-browse the source for ideas on how to use Wookie.
+Wookie is now being used in production in many places, including the [Turtl project](https://turtl.it),
+where it serves both the API server and the turtl.it website.
 
+<a name="wookie-dog"></a>
 The dog (Wookie)
 ----------------
 <ul class="gallery clear">
