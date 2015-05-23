@@ -5,11 +5,11 @@ layout: documentation
 
 Wookie best practices
 =====================
+{{toc}}
+
 Here are some tips on making your Wookie experience as smooth as possible. Keep
 in mind that this page may update frequently as issues come up and as Wookie is
 used more in production.
-
-{{toc}}
 
 ### When to use Wookie
 Wookie is, by nature, asynchronous. This means that it really shines when your

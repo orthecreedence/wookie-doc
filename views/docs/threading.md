@@ -5,6 +5,8 @@ layout: documentation
 
 Threading
 =========
+{{toc}}
+
 Sometimes you'll want to run multiple instances of Wookie in the same lisp
 process, a thread for each Wookie. This allows you the best of both worlds: an
 async app server that utilizes all the cores of the machine you're on.
@@ -20,8 +22,7 @@ states of different threads from bumping into each other.
 Note that if using multiple ports, you'll likely need some sort of reverse proxy
 to distribute incoming requests to your app (see [best practices](/docs/best-practices)).
 
-Same app, multiple ports
-------------------------
+### Same app, multiple ports
 This is the easiest way to run multiple Wookie instances: you load your plugins,
 load your app-specific hooks, and define all your app's routes. This happens on
 load (not when you start the server). This way by the time you actually start
@@ -55,8 +56,7 @@ Here's an example:
 Easy right? Just remember, don't change your server state once the app threads
 are started!
 
-Different apps, multiple ports
-------------------------------
+### Different apps, multiple ports
 There may be times when you want different apps running on different ports and
 you want to use one lisp instance to do so. In this case, you want to give each
 thread its own instance of the `wookie-state` class. This can be done easily
