@@ -37,7 +37,7 @@ content .documentation {padding-bottom: 100px;}
 .home .inner {max-width: 900px; margin: 0 auto;}
 .home h1 {margin-left: 0; margin-bottom: 24px; color: #ddd;}
 .callout {font-size: 17px;}
-.doclink a {display: block; width: 35%; margin: 32px auto 16px auto; padding: 10px 24px; text-align: center; background: #fff; border-radius: 4px; box-shadow: 0 0 6px rgba(0, 0, 0, .3);}
+.doclink a {display: block; width: 35%; margin: 32px auto 16px auto; padding: 10px 24px; font-size: 18px; text-align: center; background: #fff; border-radius: 4px; box-shadow: 0 0 6px rgba(0, 0, 0, .3);}
 .doclink a:hover {text-decoration: none;}
 
 footer {width: 900px; margin: 100px auto 0 auto; padding: 4px 0 30px 0; color: #666; font-size: 11px; border-top: 1px solid #ccc;}
