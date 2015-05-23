@@ -19,8 +19,10 @@ Default `nil` (the safe option for production use)
 
 ### \*max-body-size\*
 When we are [storing the HTTP body in the request object](/docs/request-handling#request-store-body),
-this determines the maximum data we can buffer before sending the client an
-`HTTP 413` error and ending the request.
+this determines the maximum data (in bytes) we can buffer before sending the
+client an `HTTP 413` error and ending the request.
+
+Default `1024 * 1024 * 2` (2mb)
 
 ### \*hide-version\*
 If `t` will abstain from sending Wookie's version number in the `Server` header
