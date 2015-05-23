@@ -15,8 +15,7 @@
     (send-response res :headers '(:content-type "text/html") :body body)))
 
 (defroute (:get "/best-practices") (req res)
-  (let ((body (load-view :pages/best-practices)))
-    (send-response res :status 301 :headers '(:location "/docs/best-practices") :body "moved <a href=\"/docs/best-practices\">here</a>")))
+  (send-response res :status 301 :headers '(:location "/docs/best-practices") :body "moved <a href=\"/docs/best-practices\">here</a>"))
 
 (defroute (:get "/faq") (req res)
   (let ((body (load-view :pages/faq)))
