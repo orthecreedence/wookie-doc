@@ -7,6 +7,8 @@ Error handling
 ==============
 {{toc}}
 
+This covers how Wookie handles errors.
+
 ### Listener's event-cb
 Error handling in Wookie is done by passing an event/error handler function to
 your listener on instantiation:

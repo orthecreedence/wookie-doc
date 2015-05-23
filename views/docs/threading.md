@@ -18,7 +18,7 @@ bound to a thread-local variable (if needed), giving you a safe way to keep
 states of different threads from bumping into each other.
 
 Note that if using multiple ports, you'll likely need some sort of reverse proxy
-to distribute incoming requests to your app (see [best practices](/best-practices)).
+to distribute incoming requests to your app (see [best practices](/docs/best-practices)).
 
 Same app, multiple ports
 ------------------------
