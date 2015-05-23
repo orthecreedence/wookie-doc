@@ -15,7 +15,7 @@ If you need a reference for Wookie, the source for this doc site is built on top
 of Wookie and [is available on github](https://github.com/orthecreedence/wookie-doc).
 
 ### Getting Wookie
-Wookie is `available` on quicklisp:
+Wookie is available on quicklisp:
 
 ```lisp
 (ql:quickload :wookie)
