@@ -5,6 +5,8 @@ layout: documentation
 
 Hooks
 =====
+{{toc}}
+
 Hooks provide tie-ins to specific points of execution during the processing of
 a request. Hooks are the foundation on which plugins are built, but can be used
 outside of plugins.
@@ -12,44 +14,42 @@ outside of plugins.
 For instance, if you want to run initialization code for every incoming request,
 or do some sort of cleanup after a response goes out, you can use hooks.
 
-{{toc}}
-
-### Hooks and futures
+### Hooks and promises
 A useful feature of hooks is that if a hook function returns a
-[cl-async future](http://orthecreedence.github.io/cl-async/future), Wookie will
-wait for that future to finish before continuing execution on the current
+[promise](http://orthecreedence.github.io/blackbird), Wookie will
+wait for that promise to resolve before continuing execution on the current
 request.
 
 For instance, if you need to check a user's authentication against your database
 and only want to continue processing the request if the info checks out, you 
-could hook into the `:pre-route` hook and return a future that's finished once
+could hook into the `:pre-route` hook and return a promise that's resolved once
 the user's auth info checks out. Then when the route for the current request is
 loaded, that user is already authenticated.
 
-Note that if multiple functions on the same hook return futures, Wookie will
-wait for *all* of those futures to finish before continuing processing.
+Note that if multiple functions on the same hook return promises, Wookie will
+wait for *all* of those promises to resolve before continuing processing.
 
-See notes on [using chunking and futures with :pre-route](/docs/hooks#pre-route)
+See notes on [using chunking and promises with :pre-route](/docs/hooks#pre-route)
 below.
 
 ### Error handling
-Wookie's hooks are future-aware as explained above, but Wookie also watches the
-futures for errors. If [signal-error](http://orthecreedence.github.io/cl-async/future#signal-error)
-is called on any of the futures Wookie's hook system is waiting on, Wookie will
-*cancel/destroy* the current request __without__ sending a response.
+Wookie's hooks are promise-aware as explained above, but Wookie also watches the
+promises for errors. If any of the promises Wookie's hook system is waiting on
+is rejected, Wookie will *cancel/destroy* the current request __without__
+sending a response.
 
 Let's say you're checking user authentication info in `:pre-route`, but the auth
 info is wrong and you don't want the user to even get to the route (why waste
 the CPU cycles on some deadbeat?)...you can send a 401 HTTP response via
-[send-response](/docs/request-handling#send-response) and then call 
-`signal-error` on the hook function's future.
+[send-response](/docs/request-handling#send-response) and then reject the hook
+function's returned promise.
 
 As mentioned, when an error is passed back from a hook function, the request,
 its data, its callbacks, etc etc will all be obliterated. Send back your
 error response *before* signaling an error or the client will be left hanging.
 
-It's important to note that Wookie ignores the actual error signalled by
-`signal-error`. You could just send `t` instead of an error object if you want
+It's important to note that Wookie ignores the actual error object on rejected
+hook promises. You could just send `t` instead of an error object if you want
 to, but it's best to be more descriptive since there's a chance the error object
 may be used for something in the future.
 
@@ -74,11 +74,11 @@ and also name the hook `:check-request`:
   :check-request)
 ```
 
-Here's an example using futures:
+Here's an example using promise:
 ```lisp
 (add-hook :pre-route
   (lambda (req res)
-    (let ((future (cl-async-future:make-future)))
+    (with-promise (resolve reject)
       ;; grab our user from the database
       (alet ((user-info (my-app:get-user-from-db)))
         (if user-info
@@ -87,14 +87,12 @@ Here's an example using futures:
               ;; allow other parts of the app access to the user info through request-data
               (setf (request-data req) user-info)
               ;; let the hook system know we're done here
-              (cl-async-future:finish future))
+              (resolve))
             ;; bad auth info (blank user returned). send a "nope" response and boot them
             (progn
               (send-response res :status 401 :body "User auth failed!")
               ;; discontinue the request
-              (signal-error future (make-instance 'error)))))
-      ;; return the future to the hook system for tracking
-      future)))
+              (reject (make-instance 'error))))))))
 ```
 
 ### remove-hook (function)
@@ -133,9 +131,9 @@ Called directly before the routing of a request takes place.
 
 `:pre-route` is probably the best place to check application authentication. By
 this time, you have all the GET variables and all your request headers
-(including the `Authorization` header). `:pre-route` can return a future that
-finishes either with a value (ignored) or has an error triggered on it depending
-on whether authentication was successful or not.
+(including the `Authorization` header). `:pre-route` hook functions can return a
+promise that resolves either with a value (ignored) or has an error triggered on
+it depending on whether authentication was successful or not.
 
 However, this poses some problems. Let's say you want to support large file
 uploads in your app:
@@ -147,7 +145,7 @@ uploads in your app:
     ))
 ```
 
-However, if you check auth on this call in `:pre-route` via a future, it's very
+However, if you check auth on this call in `:pre-route` via a promise, it's very
 possible that the client will start sending the body chunks *before* your
 [with-chunking](/docs/request-handling#with-chunking) handler is called, meaning
 body chunks that come in in the meantime are gone. Forever.
@@ -162,7 +160,7 @@ you want to tell the client to wait to send the body until we say it's ok:
   ;; IF the client sent an "Expect: 100-continue" header, send back our, "yes
   ;; please continue" header, instructing the client to send the body now that
   ;; our route is set up.
-  (when (string= (getf (request-headers req) :expect)
+  (when (string= (gethash "expect" (request-headers req))
                  "100-continue")
     (send-100-continue res))
   (with-chunking (chunk last-chunk-p)
@@ -190,7 +188,7 @@ However, you have one more trick up your jedi sleeve:
   ;; IF the client sent an "Expect: 100-continue" header, send back our, "yes
   ;; please continue" header, instructing the client to send the body now that
   ;; our route is set up.
-  (when (string= (getf (request-headers req) :transfer-encoding)
+  (when (string= (gethash "transfer-encoding" (request-headers req))
                  "chunked")
     (send-100-continue res))
   (with-chunking (chunk last-chunk-p)

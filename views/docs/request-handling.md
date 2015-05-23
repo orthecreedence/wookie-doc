@@ -5,13 +5,13 @@ layout: documentation
 
 Request handling
 ================
+{{toc}}
+
 Starting a server and setting up routes is kewl, but unless you know what to do
 once an actual request comes in, it's all just an exercise in academia.
 
 Wookie supports simple request/response handling, but also has the ability to
 stream incoming/outgoing chunked HTTP content.
-
-{{toc}}
 
 ### request (class)
 The request class holds information about an incoming request: the socket the
@@ -52,14 +52,24 @@ This is a [puri](http://www.cl-user.net/asp/libs/PURI) object of the parsed HTTP
 [request resource](#request-resource).
 
 ##### request-http (accessor)
-This is the raw [http-request](https://github.com/orthecreedence/http-parse#http-request-class)
-object It's created by [http-parse](https://github.com/orthecreedence/http-parse),
+This is the raw [http-request](https://github.com/fukamachi/fast-http#structure-http-request-extends-http)
+object. It's created by [fast-http](https://github.com/fukamachi/fast-http),
 the HTTP parsing library used by Wookie.
 
 ##### request-data (accessor)
 This accessor allows passing of arbitrary data along with a request. For example
 a `:pre-route` [hook](/docs/hooks) could process part of the request and save it
 so that later routes would have access to it.
+
+##### request-store-body (accessor)
+This boolean value determines whether or not we should save the HTTP body of the
+incoming request (used to parse out POST variables or file data).
+
+Generally, it's better to stream this data using [chunked handling](/docs/request-handling#with-chunking),
+but many times you just want to gather simple post data (perhaps for use with
+[Wookie's core post plugin](/docs/core-plugins#post)).
+
+Default `t` (disable in [:pre-route](/docs/hooks#pre-route) if you want tighter control over memory consumption)
 
 ### response (class)
 The response class is used to send a response from Wookie to the connecting
@@ -192,7 +202,7 @@ See the [start-response example](#start-response-example) for usage.
 
 ### with-chunking (macro)
 ```lisp
-(defmacro with-chunking (request (chunk-data last-chunk-p) &body body))
+(defmacro with-chunking (request (chunk-data last-chunk-p &key store-body) &body body)
 ```
 This macro is used to support an incoming request that's chunked. For instance,
 let's say a user wants to upload a file to you, and instead of storing the
@@ -210,6 +220,13 @@ incoming data.
 `last-chunk-p` is a boolean. If it's `nil`, expect more chunks on the way. If
 it's `t`, then `chunk-data` is the last chunk in the data, and you should do
 any cleanup you need to.
+
+By default, `with-chunking` will disable storing the HTTP body on any request
+we set up chunking for (see [request-store-body](/docs/request-handling#request-store-body)).
+The `:store-body` keyword (boolean) lets you specify that you want to chunk this
+request *and* you also want to buffer the body. Keep in mind that if this is set
+to `t` and the HTTP body size exceeds [\*max-body-size\*](/docs/config#max-body-size),
+the request will be stopped.
 
 This is all confusing, so let's see an example where we stream an upload, chunk
 by chunk, to S3 using a fictional (but plausible) uploader object:

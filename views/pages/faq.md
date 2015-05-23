@@ -23,3 +23,15 @@ wookie doesn't exist, to work around this ASDF comes with `symbol-call`.
                             (system (eql (find-system :foo)))
     (asdf/package:symbol-call :wookie 'load-plugins)))
 ```
+
+### I get errors about SSL while loading Wookie
+
+This can be caused if you don't have OpenSSL installed on your machine or it is
+installed in a non-standard location.
+
+You can disable loading OpenSSL by doing the following *before* you Quickload or
+ASDF load Wookie:
+
+```lisp
+(push :wookie-no-ssl *features*)
+```

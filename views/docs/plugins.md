@@ -5,6 +5,8 @@ layout: documentation
 
 Plugins
 =======
+{{toc}}
+
 Wookie's goal is to provide a fast HTTP server while keeping the core as minimal
 as possible. Wookie does this by only providing the bare essentials for a web
 server, and letting the rest be built using plugins.
@@ -18,8 +20,6 @@ to the `wookie-plugin-export` package. This makes it very easy for an
 application to `:use` one package and have access to all of the exported
 functions for the loaded plugins, without having to explicitely know which
 package a plugin function is defined.
-
-{{toc}}
 
 ### \*enabled-plugins\*
 This global variable holds a list of enabled plugins. The default:

@@ -1,6 +1,6 @@
 ---
 title: Best practices
-layout: default
+layout: documentation
 ---
 
 Wookie best practices
@@ -30,7 +30,10 @@ I can...feel free to take a stab at it yourself as well =].
 
 ### Error handling
 There is a [section covering error handling](/docs/error-handling) in the docs,
-but I feel this is yet another chance to reiterate.
+but I'm going to take this chance to talk about error handling *in general* when
+using cl-async et al.
+
+There are two basic setups 
 
 Error handling in asynchronous systems is very important. A rogue condition
 can completely halt the execution of your application and leave your clients
@@ -81,21 +84,20 @@ you may *want* to stream upload data from one location to another through
 Wookie, browsers will just send the entire thing as one big chunk with a
 `Content-Length` header specified.
 
-However, as of Wookie 0.3.6 there's a workaround:
+However, you can specify that the upload route use chunking:
 
 ```lisp
-;; note we use :force-chunking here
-(defroute (:post "/uploads" :chunk t :force-chunking t) (req res)
+(defroute (:post "/uploads" :chunk t) (req res)
   (with-chunking (chunk lastp)
     ...))
 ```
 
-The `:force-chunking` value in [defroute](/docs/routes#defroute) tells Wookie
-that even though the request may come in as one continuous body block (thanks
-to XHR being insensitive to our needs), we want to call our [with-chunking](/docs/request-handling#with-chunking)
-handler once for each *packet* that comes in. This saves us from having to
-buffer an entire file into memory, letting us stream it off to wherever it needs
-to go even if the client doesn't think it's a good idea.
+Since Wookie switched from http-parse to [fast-http](https://github.com/fukamachi/fast-http),
+[with-chunking](/docs/request-handling#with-chunking) will now receive the HTTP
+data packet-by-packet (instead of chunk-by-chunk). This lets you stream incoming
+data, chunked or not, as it arrives. `with-chunking` also tells Wookie to *not*
+[store the incoming HTTP body](/docs/request-handling#request-store-body) in the
+request object (so you don't waste 100mb of memory when processing an upload).
 
 ### Reverse Proxy
 Wookie can be run by itself, but because it's new and hasn't been battle tested,

@@ -5,6 +5,8 @@ layout: documentation
 
 Routes
 ======
+{{toc}}
+
 Routes allow you to map a URL to a block of code to be run when that URL is
 requested.
 
@@ -21,14 +23,13 @@ the router that they are the wrong route for the job and that the routing
 system should use the next matching route (known as "route jumping," done via
 the [next-route](#next-route) function).
 
-{{toc}}
-
 ### defroute (macro)
 ```lisp
 (defmacro defroute ((method resource &key (regex t) (case-sensitive t)
-                                          chunk (buffer-body t) suppress-100 force-chunking
+                                          chunk (buffer-body t) suppress-100
                                           (replace t)
-                                          vhost)
+                                          (vhost '*default-vhost*)
+                                          (priority 0))
                     (bind-request bind-response &optional bind-args)
                     &body body))
 ```
@@ -87,14 +88,6 @@ chunked router is hooked in to listen to the chunks*. In this case,
 then you would call [send-100-continue](/docs/request-handling#send-100-continue)
 once the router has called [with-chunking](/docs/request-handling#with-chunking).
 
-`:force-chunking` is a boolean used to tell the route that if we expect chunking
-(`:chunk t`) and the client did not send the `Transfer-Encoding: Chunked`
-header, we still want to stream in the body packet-by-packet through
-[with-chunking](/docs/request-handling#with-chunking). This is mainly useful for
-large file uploads when sent by XHR since browsers don't support
-streaming/chunked file uploads. It doesn't make any sense to buffer the
-entire file into memory when you expect/want it to be streamed anyway.
-
 `:replace` tells the routing system that this route should replace the first 
 route with the same method/resource in the routing table. If that route doesn't
 exist, the given route will be appended to the end of the routing table (ie, an
@@ -107,6 +100,10 @@ The `:vhost` keyword specifies that this route should only load for a specific
 `Host: ...` header. This is a string in the format "host.com" or
 "host.com:8080". If a port is not specified, the route will match on *any* port
 provided the host matches.
+
+The `:priority` keyword (default 0) lets us prioritize the order in which this
+route is considered when matching it to an incoming request. Routes with higher
+priority are considered first.
 
 `bind-request` and `bind-response` are the variables we want to be available to
 the route body that hold our respective [request](/docs/request-handling#request)

@@ -20,7 +20,7 @@
   (load-views)
 
   ;; start the server
-  (as:with-event-loop (:catch-app-errors t)
+  (as:with-event-loop (:catch-app-errors nil)
     (let* ((listener (make-instance 'listener :bind bind :port port))
            (server (start-server listener)))
       (as:signal-handler 2

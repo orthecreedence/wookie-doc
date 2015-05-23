@@ -5,14 +5,14 @@ layout: documentation
 
 Core plugins
 ============
+{{toc}}
+
 Wookie's core plugins provide simple support for many things an HTTP/app server
 might support: GET/POST variable processing, multipart form processing, cookie
 support, and file/directory serving.
 
 Wookie's core plugins export all public functions to the `wookie-plugin-export`
 package.
-
-{{toc}}
 
 ### get (plugin)
 The `get` plugin parses and provides an interface to variables stored in the GET

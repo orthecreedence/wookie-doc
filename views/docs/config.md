@@ -5,31 +5,37 @@ layout: documentation
 
 Configuration
 =============
-Wookie provides configuration options for much of its functionality.
-
 {{toc}}
 
-### \*error-handler\*
-This is covered in the [error handling](/docs/error-handling) section, but worth
-mentioning here as well.
+Wookie provides configuration options for some of its functionality.
 
-This var is either `nil` (Wookie's default/dumb handler) or a function that that
-takes one argument (an error/condition object), which is used to handle specific
-errors your application may run into.
+### \*debug-on-error\*
+See [error handling documentation](/docs/error-handling#debug-on-error). This
+allows errors Wookie encounters (in your routes or hooks) to pass unfettered to
+the debugger for further inspection. Great for debugging or when your app is
+bdeing actively developed.
 
-If you set this variable, it's a good idea to set the same function into
-cl-async's `:default-event-cb` keyword while starting your event loop.
+Default `nil` (the safe option for production use)
+
+### \*max-body-size\*
+When we are [storing the HTTP body in the request object](/docs/request-handling#request-store-body),
+this determines the maximum data we can buffer before sending the client an
+`HTTP 413` error and ending the request.
 
 ### \*hide-version\*
 If `t` will abstain from sending Wookie's version number in the `Server` header
 on a response, otherwise if `nil` will pull and send current version from the
 ASDF system.
 
+Default `nil`
+
 ### \*enabled-plugins\*
 This is a list of plugins that Wookie is allowed to load. Wookie may parse and
 or be aware of *all* plugins in your plugin directories, but will only load ones
 directly that are in this list. Note that if it's not in this list, but it *is*
 a dependency of a plugin that is, it will be loaded automatically by ASDF.
+
+Default `'(:get :post :multipart :http-var :cookie :directory-router)`
 
 ### \*tmp-file-store\*
 This is a stupid variable that shouldn't be in Wookie's config, because it is

@@ -1,60 +1,36 @@
 ---
 title: Documentation
-layout: default
+layout: documentation
 ---
 
-<a id="documentation"></a>
-Documentation
+Getting started
 =============
-Wookie's documentation is split into several parts:
+{{toc}}
 
-- [Listeners](/docs/listeners)<br>
-  Listeners are how you start/stop a Wookie server
-- [Routes](/docs/routes)<br>
-  Routes are how you tell Wookie how you want to handle certain requests
-- [Request handling](/docs/request-handling)<br>
-  Covers handling incoming requests, responding to them, and everything inbetween.
-- [Error handling](/docs/error-handling)<br>
-  Covers catching and handling of asynchronous errors/conditions while Wookie is
-  running.
-- [Configuration](/docs/config)<br>
-  Learn about the configuration options Wookie provides.
-- [Plugins](/docs/plugins)<br>
-  Wookie provides much functionality (even what some consider core features) in
-  the form of plugins.
-- [Core plugins](/docs/core-plugins)<br>
-  Learn how to use the core plugins to make your experience with Wookie easier.
-- [Hooks](/docs/hooks)<br>
-  Hooks allow you to tie in to specific points of execution in the processing of
-  a request.
-- [Writing plugins](/docs/writing-plugins)<br>
-  Learn how to write your own plugins for Wookie to extend the functionality to
-  your liking.
-- [Threading](/docs/threading)<br>
-  Gives examples on running Wookie in a threaded context (for instance, multiple
-  Wookies running on different ports in the same lisp instance).
-
-<a id="ssl-note"></a>
-### SSL Note
-If you don't have `cl+ssl` (or OpenSSL) installed on your machine and you get
-SSL errors while loading Wookie:
-
-```lisp
-(push :wookie-no-ssl *features*)
-```
-
-<a id="quick-start"></a>
-Quick start
------------
 Here are some quick examples to get you started using Wookie. Remember that
-Wookie runs on top of a [cl-async](http://orthecreedence.github.com/cl-async) event loop, so you must start
-Wookie from within an event loop for it to work.
+Wookie runs on top of a [cl-async](http://orthecreedence.github.com/cl-async) event loop,
+so you must start Wookie from within an event loop for it to work.
 
 If you need a reference for Wookie, the source for this doc site is built on top
 of Wookie and [is available on github](https://github.com/orthecreedence/wookie-doc).
 
+### Getting Wookie
+Wookie is `available` on quicklisp:
+
+```lisp
+(ql:quickload :wookie)
+```
+
+However, sometimes Wookie has pending changes/fixes. If you want to grab the
+latest version you can do:
+
+```bash
+cd ~/quicklisp/local-projects
+git clone git://github.com/orthecreedence/wookie
+```
+
 ### Starting Wookie
-This example shows how to set up a very basic website using Wookie. It uses a
+This example shows how to set up a very basic app using Wookie. It uses a
 [listener](/docs/listeners#listener), which describes how people can connect to
 the server, and passes it to [start-server](/docs/listeners#start-server).
 
@@ -73,7 +49,7 @@ directory serving, etc.
 
 ;; setup a simple homepage
 (defroute (:get "/") (req res)
-  (send-response res :body "Welcome to my website!"))
+  (send-response res :body "Welcome to my app!"))
 
 ;; setup a mapping for the url / to a local directory assets. a request for
 ;; 
@@ -82,14 +58,13 @@ directory serving, etc.
 ;; will load "./assets/images/background.jpg"
 (def-directory-route "/" "./assets")
 
-;; start an event loop that catches errors (if error are not caught, they wind
-;; up in the REPL which means a non-responsive server!)
-(as:with-event-loop (:catch-app-errors t)
+;; start the event loop that Wookie runs inside of
+(as:with-event-loop ()
   ;; create a listener object, and pass it to start-server, which starts Wookie
   (let* ((listener (make-instance 'listener
                                   :bind nil  ; equivalent to "0.0.0.0" aka "don't care"
                                   :port 80))
-         ;; start it!!
+         ;; start it!! this passes back a cl-async server class
          (server (start-server listener)))
     ;; stop server on ctrl+c
     (as:signal-handler 2
@@ -100,26 +75,5 @@ directory serving, etc.
         ;; graceful stop...rejects all new connections, but lets current requests
         ;; finish.
         (as:close-tcp-server server)))))
-```
-
-### Helper functions
-Wookie comes bundled with some helper function to make all our lives easier.
-
-##### start-static-server
-Starts a static file server in the current directory. This is great if you need
-to access local resources via a web browser but don't want to have to fire up
-Apache or similar and set up a bunch of vhosts. Example:
-
-```lisp
-(wookie-helper:start-static-server :port 8090 :asset-dir "./assets")
-```
-
-The above will serve all files under `./assets` at the top-level path. In other
-words, `http://127.0.0.1:8090/test.html` will be loaded from `./assets/test.html`.
-
-Definition:
-```lisp
-(defun start-static-server (&key (asset-dir "./") bind (port 8080)))
-  => nil
 ```
 

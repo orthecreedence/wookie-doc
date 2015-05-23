@@ -1,23 +1,17 @@
 ---
-title: Wookie: An asynchronous web server for Common Lisp
-layout: default
+title: Wookie: An asynchronous HTTP server for Common Lisp
+layout: base
 ---
 
-Wookie - An asynchronous HTTP server
+{{tpl|tag|div.home}}
+{{tpl|tag|div.inner}}
+
+Wookie - An async HTTP server for Common lisp
 ====================================
-Wookie is an asynchronous HTTP server written in Common Lisp. It is built on top
-of [cl-async](http://orthecreedence.github.com/cl-async) and
-[http-parse](https://github.com/orthecreedence/http-parse). Wookie's code is
-hosted on [github](https://github.com/orthecreedence/wookie).
-
-*Wookie is considered beta.* [See apps that use Wookie](/apps).
-
-See __[Wookie's documentation](/docs).__
-
 ```lisp
-(defpackage :wookie-test
+(defpackage :my-app
   (:use :cl :wookie))
-(in-package :wookie-test)
+(in-package :my-app)
 
 ;; load Wookie's core plugins
 (load-plugins)
@@ -30,6 +24,18 @@ See __[Wookie's documentation](/docs).__
 (as:with-event-loop ()
   (start-server (make-instance 'listener :port 80)))
 ```
+{{tpl|tag|/div}}
+{{tpl|tag|/div}}
 
-Wookie is [licensed MIT](https://github.com/orthecreedence/wookie/blob/master/LICENSE).
+
+{{tpl|tag|content.callout}}
+
+Wookie is an asynchronous HTTP server built on top of
+[cl-async](http://orthecreedence.github.com/cl-async) and
+[fast-http](https://github.com/fukamachi/fast-http). Wookie functions both as a
+simple HTTP server and as an app server to run your HTTP-based Common Lisp app.
+
+{{tpl|tag|div.doclink}}
+[Get started &raquo;](/docs)
+{{tpl|tag|/div}}
 

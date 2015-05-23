@@ -5,6 +5,8 @@ layout: documentation
 
 Writing plugins
 ===============
+{{toc}}
+
 Knowing how to write plugins can make Wookie a lot more useful to you, and if
 you share your plugins, possibly others!
 
@@ -13,8 +15,6 @@ loads all your plugin's files and dependencies. The plugin code itself ties into
 Wookie using hooks (or builds on top of existing Wookie functionality) and
 exports your public functions to the `woookie-plugin-export` package. There are
 a number of tools Wookie provides to make this process easy.
-
-{{toc}}
 
 ### defplugin (macro)
 ```lisp

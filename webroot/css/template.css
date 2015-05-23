@@ -14,9 +14,10 @@ body {margin: 0; padding: 0; font-family: arial, helvetica; font-size: 14px; lin
 div#wookie {position: fixed; right: 0; bottom: 0; width: 220px; height: 238px;}
 div#wookie a {display: block; position: absolute; bottom: 0; right: -120px; width: 220px; height: 238px; background: url(/images/template/wookie.png) right bottom no-repeat;}
 div#wookie a:hover {text-decoration: none;}
-div#container {width: 740px; margin: 0 auto;}
+div#container {}
 
-header {width: 108%; margin: -5px 0 40px -6%; padding: 8px 2% 4px 2%; background: #1d1f21; border: 1px solid #ccc; border-radius: 5px;}
+header {padding: 12px 0 10px 0; background: #111; box-shadow: 0 0 3px #000;}
+header .inner {max-width: 900px; margin: 0 auto;}
 header h1 {float: left; margin: 0 0 0 0; padding: 0 32px 1px 0; font-size: 16px; border-right: 1px solid #555;}
 header h1 a {color: #ddd;}
 header h1 a:hover {color: #dbb748; text-decoration: none;}
@@ -29,15 +30,17 @@ nav ul li:last-child a {padding-right: 0px; }
 nav ul li:first-child a {padding-left: 32px; }
 nav ul li a:hover {color: #d9c382; text-decoration: none;}
 
-content {display: block; min-height: 300px;}
+content {display: block; max-width: 900px; margin: 0 auto; min-height: 300px;}
 content .documentation {padding-bottom: 100px;}
 
-.callout {width: 90%; margin: 20px auto 20px auto; font-weight: bold; font-size: 22px; text-transform: uppercase; }
-.callout ul {text-align: center; list-style: none; margin: 0; padding: 10px 0;}
-.callout ul li {display: inline;}
-.callout ul li a {display: inline-block;}
+.home {margin: 0 0 32px 0; padding: 16px 0 28px 0; background: #1d1f21;}
+.home .inner {max-width: 900px; margin: 0 auto;}
+.home h1 {margin-left: 0; margin-bottom: 24px; color: #ddd;}
+.callout {font-size: 17px;}
+.doclink a {display: block; width: 35%; margin: 32px auto 16px auto; padding: 10px 24px; text-align: center; background: #fff; border-radius: 4px; box-shadow: 0 0 6px rgba(0, 0, 0, .3);}
+.doclink a:hover {text-decoration: none;}
 
-footer {margin: 100px 0 0 0; padding: 4px 0 30px 0; color: #666; font-size: 11px; border-top: 1px solid #ccc;}
+footer {width: 900px; margin: 100px auto 0 auto; padding: 4px 0 30px 0; color: #666; font-size: 11px; border-top: 1px solid #ccc;}
 footer ul {float: left; list-style: none; margin: 0; padding: 0;}
 footer ul li {display: inline-block; padding: 0 6px 0 9px; line-height: 1; border-left: 1px solid #ccc;}
 footer ul li:first-child {border-left: 0; padding-left: 0;}
@@ -46,7 +49,7 @@ footer p {float: right; margin: 0; padding: 0;}
 a {color: #3173C4; text-decoration: none;}
 a:hover {text-decoration: underline;}
 h1, h2, h3, h4, h5 {margin: 20px 0 10px 0; font-weight: normal;}
-h1, h2, h3 {margin-left: -14px;}  /* really helps to set headers/sections out visually */
+h1, h2, h3 {margin-left: -8px;}  /* really helps to set headers/sections out visually */
 h1 {font-size: 28px; line-height: 1.2em;}
 h2 {font-size: 24px; border-bottom: 1px solid #ccc;}
 h3 {font-size: 18px;}
@@ -58,18 +61,32 @@ ol ol {margin: 0;}
 p {margin: 15px 0;}
 strong {font-weight: bold;}
 code {margin: 0 2px; padding: 0 5px; white-space: nowrap; font-family: Consolas, "Liberation Mono", Courier, monospace; background: #edebdd; border-radius: 3px;}
-pre code {color: #c9bf9f; white-space: pre; background: none;}
+pre code {margin: 0; padding: 0; color: #c9bf9f; white-space: pre; background: none;}
 em code, strong code {font-style: normal; font-weight: normal;}
 
 i, cite, em, var, address, dfn { font-style: italic; }
 
 .post .date {float: right; display: inline-block; padding: 6px 0 0 0;}
 
+.toc {float: right; width: 25%; margin: 0 0 16px 16px; padding: 16px; background: #fff; box-shadow: 0 0 6px rgba(0, 0, 0, .3); border-radius: 4px;}
+.toc ul {margin: 0 0 0 16px; padding: 0; color: #999;}
+
+.doc-toc ul {list-style: none; margin: 0 0 16px; padding: 0;}
+.doc-toc ul li {float: left; display: block; width: 28%; height: 102px; margin: 0 1% 1.5% 0; padding: 6px 2%; background: #f5f3e4; border-radius: 2px; }
+.doc-toc ul li a {display: block; font-size: 1.2em;}
+
 ul.gallery {list-style: none; margin: 0; padding: 0;}
 ul.gallery li {display: block; float: left; margin: 0 3px 3px 0;}
 ul.gallery li a {display: block; line-height: .1em;}
 ul.gallery li a img {border: 1px solid #666;}
 ul.gallery li a img:hover {border: 1px solid #000;}
+
+.documentation {padding: 16px 0 0 0;}
+.documentation .doc-nav {float: left; width: 16%; margin: 24px 0 0 0; border-right: 1px solid #ccc;}
+.documentation .doc-nav ul {list-style: none; margin: 0; padding: 0;}
+.documentation .doc-nav ul li a {display: block; padding: 6px 12px 6px 0; font-size: 15px; text-align: right; border-bottom: 1px solid #ccc;}
+.documentation .doc-nav ul li:last-child a {border-bottom: 0;}
+.documentation .doc-content {float: right; width: 80%;}
 
 body.apps content ul {margin: 24px 0; padding: 0 10px; list-style: none;}
 body.apps content ul li {padding: 16px 0; border-bottom: 1px solid #ccc;}
