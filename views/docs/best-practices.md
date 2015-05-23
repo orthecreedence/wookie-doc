@@ -33,31 +33,59 @@ There is a [section covering error handling](/docs/error-handling) in the docs,
 but I'm going to take this chance to talk about error handling *in general* when
 using cl-async et al.
 
-There are two basic setups 
+There are two basic setups: production and development.
 
-Error handling in asynchronous systems is very important. A rogue condition
-can completely halt the execution of your application and leave your clients
-hanging indefinitely.
+##### Production
+In production setup, we don't let errors reach the debugger, which means telling
+both Wookie and cl-async to hand errors that are caught to our handler function.
 
-Familiarize yourself with [cl-async's error handling](http://orthecreedence.github.io/cl-async/event-handling)
-and also [Wookie's error handling](/docs/error-handling) before taking your app
-to production.
+```lisp
+(defun my-app-error-handler (ev &optional sock)
+  "Handles cl-async/wookie errors."
+  (let* ((sockdata (when sock (as:socket-data sock)))
+         (response (getf sockdata :response))
+         (request (when response (response-request response))))
+    ;; log the error
+    (vom:error "app: ~a" ev)
+    ;; if we have a response object, send the client a "gee, oh well" msg
+    (when response
+      (wookie:send-response response :key 500 :body "error"))))
 
-Here are some tips on checking your error handling:
+(as:with-event-loop (:catch-app-errors 'my-app-error-handler)
+  (wookie:start-server (make-instance 'wookie:listener
+                                      :port 9292
+                                      :event-cb 'my-app-error-handler)))
+```
 
-- Try sending bogus data to your app
-- Try accessing pages that don't exist
-- Intentionally add in conditions that will cause an error. See how the app
-responds.
+Notice we set up an error handler for both cl-async and for Wookie's listener
+object. It's possible that either will catch rogue errors.
 
-If everything is set up properly, you should get no crashes in your app, even
-in the event that errors escape. See [an example/simple error handler for a 
-Wookie app](https://github.com/orthecreedence/wookie-doc/blob/master/init.lisp).
+This setup makes sure no errors will ever make it to the debugger (which would
+grind your app to a halt until you manually restart).
 
-*NOTE:* A top-level error handler is no excuse to not catch errors at the
-source. It is used as a last resort to ensure the well-being of the application
-as a whole. If errors escape to the top-level, try to figure out what happened
-and fix the situation.
+##### Development
+In development, we generally want all errors to make it to the top level
+debugger so we can inspect them and get backtraces. Here's a good basic setup to
+make sure this happens:
+
+```lisp
+(let ((blackbird:*debug-on-error* t)
+      (wookie-config:*debug-on-error* t))
+  ;; omit :catch-app-errors here
+  (as:with-event-loop ()
+    (wookie:start-server (make-instance 'wookie:listener
+                                        :port 9292))))
+```
+
+This tells Wookie (and [blackbird](http://orthecreedence.github.io/blackbird/))
+*not* to try and catch errors, but instead let them bubble up to the debugger.
+Also, when `:catch-app-errors` is not given to cl-async, it also refuses to trap
+errors.
+
+This setup allows much better visibility into the errors your application is
+triggering. Do not do this in production though, because when the debugger is
+entered, your app will stop running until a restart is run or the debugger is
+exited.
 
 ### Application auth
 As mentioned elsewhere, it makes sense to check your application authentication
