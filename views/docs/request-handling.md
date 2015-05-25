@@ -77,6 +77,15 @@ client by passing it to [send-response](#send-response) or [start-response](#sta
 
 It is passed to all routes defined by [defroute](/docs/routes#defroute).
 
+##### response-request (accessor)
+This is a convenience accessor to get the [request](/docs/request-handling#request)
+object attached to the response.
+
+```lisp
+(when (as:socket-closed-p (request-socket (response-request response)))
+  ...)
+```
+
 ##### response-headers (accessor)
 This is the accessor for the headers to send back to the client. They are in plist
 format:
