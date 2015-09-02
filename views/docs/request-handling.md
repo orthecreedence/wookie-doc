@@ -211,7 +211,7 @@ See the [start-response example](#start-response-example) for usage.
 
 ### with-chunking (macro)
 ```lisp
-(defmacro with-chunking (request (chunk-data last-chunk-p &key store-body) &body body)
+(defmacro with-chunking (request (chunk-data last-chunk-p &key start end store-body) &body body)
 ```
 This macro is used to support an incoming request that's chunked. For instance,
 let's say a user wants to upload a file to you, and instead of storing the
@@ -229,6 +229,14 @@ incoming data.
 `last-chunk-p` is a boolean. If it's `nil`, expect more chunks on the way. If
 it's `t`, then `chunk-data` is the last chunk in the data, and you should do
 any cleanup you need to.
+
+The `:start` and `:end` keywords let you specify *bindings* that will hold the
+start and end positions for `chunk-data`. If either `:start` or `:end` are not
+specified, then `chunk-data` will be a subseq (a copy) of the array passed in by
+the HTTP parser. Basically, you should probably specify the `:start`/`:end`
+keywords to avoid a needless copy, but if you don't, Wookie will fall back to
+its old default behavior (which is that `chunk-data` has exactly what you need
+in it).
 
 By default, `with-chunking` will disable storing the HTTP body on any request
 we set up chunking for (see [request-store-body](/docs/request-handling#request-store-body)).
