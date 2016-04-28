@@ -48,7 +48,7 @@ and you could store that user into in `request-data` so that whatever route
 loads will have access to the info and won't have to look it up again.
 
 ##### request-uri (accessor)
-This is a [puri](http://www.cl-user.net/asp/libs/PURI) object of the parsed HTTP
+This is a [quri](http://quickdocs.org/quri/) object of the parsed HTTP
 [request resource](#request-resource).
 
 ##### request-http (accessor)
