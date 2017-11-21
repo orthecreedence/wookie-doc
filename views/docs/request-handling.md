@@ -32,11 +32,11 @@ The resource being requested. For example `/docs/search?class=listener` (the
 entire resource is gathered, even the GET vars).
 
 ##### request-headers (accessor)
-The HTTP headers that came in with this request. The headers are in plist format:
+The HTTP headers that came in with this request. The headers are in hash-table format:
 ```lisp
-(:host "musio.com"
+#{:host "musio.com"
  :accept "text/html"
- :connection "close")
+ :connection "close"}
 ```
 
 ##### request-data (accessor)
